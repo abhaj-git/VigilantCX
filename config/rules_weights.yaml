@@ -1,0 +1,100 @@
+# Audit rule weights and severity; thresholds for filtering
+# Rule IDs align with persona failure_modes and required-behavior checks
+
+# Severity: critical = regulatory/legal; high = compliance risk; moderate = quality; low = minor
+# Weight used in aggregate score (higher = worse when failed)
+
+collections_rules:
+  missing_mini_miranda:
+    weight: 40
+    severity: critical
+    reason: "Missing Mini-Miranda"
+  no_verification_before_discussing_account:
+    weight: 35
+    severity: critical
+    reason: "No verification before discussing account"
+  third_party_disclosure_violation:
+    weight: 40
+    severity: critical
+    reason: "Third-party disclosure violation"
+  promising_outside_policy_authority:
+    weight: 35
+    severity: critical
+    reason: "Promising outside policy authority"
+  aggressive_or_threatening_tone:
+    weight: 25
+    severity: high
+    reason: "Aggressive or threatening tone"
+  misstating_balance_or_fees:
+    weight: 30
+    severity: high
+    reason: "Misstating balance or fees"
+  improper_handling_of_disputes:
+    weight: 25
+    severity: high
+    reason: "Improper handling of disputes"
+  no_recap_of_arrangement:
+    weight: 20
+    severity: moderate
+    reason: "No recap of arrangement"
+
+# Positive checks (pass = good); if missing, contribute to score
+collections_positive_checks:
+  has_greeting:
+    weight: 5
+    severity: low
+    reason: "Proper greeting present"
+  has_recap:
+    weight: 15
+    severity: moderate
+    reason: "Recap of agreement present"
+  has_right_party_verification:
+    weight: 25
+    severity: high
+    reason: "Right-party verification performed"
+
+ram_rules:
+  advising_policy_bypass:
+    weight: 40
+    severity: critical
+    reason: "Advising policy bypass"
+  contradicting_underwriting_rules:
+    weight: 35
+    severity: critical
+    reason: "Contradicting underwriting rules"
+  incorrect_documentation_guidance:
+    weight: 30
+    severity: high
+    reason: "Incorrect documentation guidance"
+  overpromising_turnaround_time:
+    weight: 25
+    severity: high
+    reason: "Overpromising turnaround time"
+  no_confirmation_of_understanding:
+    weight: 15
+    severity: moderate
+    reason: "No confirmation of understanding"
+  no_recap:
+    weight: 20
+    severity: moderate
+    reason: "No recap"
+  transactional_tone_harming_relationship:
+    weight: 15
+    severity: moderate
+    reason: "Transactional tone harming relationship"
+
+ram_positive_checks:
+  has_greeting:
+    weight: 5
+    reason: "Company and name greeting present"
+  has_dealer_verification:
+    weight: 15
+    reason: "Dealer identification verified"
+  has_recap:
+    weight: 15
+    reason: "Summary of next steps provided"
+
+# Score threshold: transcripts with aggregate score >= threshold are "above threshold" (failing)
+# Dashboard shows: score >= threshold OR any critical finding (actionable items)
+score_threshold: 70   # 0-100 scale; score >= 70 = show on dashboard
+critical_always_show: true

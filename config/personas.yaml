@@ -1,0 +1,101 @@
+# Persona definitions for Collections and RAM (from plan)
+# Used by synthetic generator and audit engine
+
+personas:
+  collections:
+    id: collections
+    name: Auto Finance Collections Agent
+    role: |
+      Regulated collections — payment promises, settlement negotiations,
+      redemption after repo, hardship discussions.
+    required_behaviors:
+      opening:
+        - Proper company greeting
+        - Agent name
+        - Mini-Miranda when required
+        - Right-party verification
+      during_call:
+        - Accurate account details
+        - Clear payment options
+        - Within-authority negotiations only
+        - No threats or misrepresentation
+        - Proper hardship options if applicable
+        - Clear redemption amount (if repo)
+      closing:
+        - Recap of agreement
+        - Payment date + amount confirmation
+        - Disclosure reminder if required
+        - Professional closing
+    failure_modes:
+      - missing_mini_miranda
+      - third_party_disclosure_violation
+      - aggressive_or_threatening_tone
+      - promising_outside_policy_authority
+      - misstating_balance_or_fees
+      - no_recap_of_arrangement
+      - no_verification_before_discussing_account
+      - improper_handling_of_disputes
+    failure_mode_labels:
+      missing_mini_miranda: "Missing Mini-Miranda"
+      third_party_disclosure_violation: "Third-party disclosure violation"
+      aggressive_or_threatening_tone: "Aggressive or threatening tone"
+      promising_outside_policy_authority: "Promising outside policy authority"
+      misstating_balance_or_fees: "Misstating balance or fees"
+      no_recap_of_arrangement: "No recap of arrangement"
+      no_verification_before_discussing_account: "No verification before discussing account"
+      improper_handling_of_disputes: "Improper handling of disputes"
+    good_looks_like:
+      - Clear regulatory compliance
+      - Controlled negotiation within policy
+      - Empathetic but firm tone
+      - Accurate payment agreement summary
+      - Clean closing
+      - No legal or reputational exposure
+
+  ram:
+    id: ram
+    name: Inside Sales RAM Team
+    role: |
+      Dealer relationship — portal usage, paperwork requirements, objections,
+      pipeline support, compliance adherence, relationship continuity.
+    required_behaviors:
+      opening:
+        - Company + name greeting
+        - Dealer identification verification
+      during_call:
+        - Step-by-step portal guidance
+        - Accurate documentation checklist
+        - No policy workarounds
+        - Clear underwriting guardrails
+        - Busy-season expectation setting
+        - Calm objection handling
+        - Confirm dealer understanding
+      closing:
+        - Summary of next steps
+        - Confirm required documents
+        - Support contact path
+        - Professional closing
+    failure_modes:
+      - advising_policy_bypass
+      - incorrect_documentation_guidance
+      - overpromising_turnaround_time
+      - contradicting_underwriting_rules
+      - no_confirmation_of_understanding
+      - no_recap
+      - transactional_tone_harming_relationship
+    failure_mode_labels:
+      advising_policy_bypass: "Advising policy bypass"
+      incorrect_documentation_guidance: "Incorrect documentation guidance"
+      overpromising_turnaround_time: "Overpromising turnaround time"
+      contradicting_underwriting_rules: "Contradicting underwriting rules"
+      no_confirmation_of_understanding: "No confirmation of understanding"
+      no_recap: "No recap"
+      transactional_tone_harming_relationship: "Transactional tone harming relationship"
+    good_looks_like:
+      - Clear portal navigation guidance
+      - Accurate compliance alignment
+      - Strong relationship tone
+      - Structured explanation
+      - Proper documentation confirmation
+      - Professional close
+      - Dealer confidence maintained
