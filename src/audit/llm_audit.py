@@ -77,5 +77,5 @@ Respond with ONLY the 1-2 sentence summary, no labels or bullet points. Examples
         )
         summary = (resp.choices[0].message.content or "").strip()
         return summary if summary else None
-    except Exception:
-        return None
+    except Exception as e:
+        raise  # so caller can show API/auth errors

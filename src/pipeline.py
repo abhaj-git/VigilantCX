@@ -38,16 +38,17 @@ def run_pipeline(store=None, max_per_scenario: int = 1, use_llm: bool = True) ->
     return ids
 
 
-def backfill_llm_summaries(store=None, api_key: Optional[str] = None) -> int:
+def backfill_llm_summaries(store=None, api_key: Optional[str] = None) -> tuple[int, Optional[str]]:
     """
     For all existing transcripts, call the LLM to get an outcome summary and update
-    the latest audit run. Returns the number of transcripts updated.
+    the latest audit run. Returns (number_updated, error_message).
     Pass api_key, or set OPENAI_API_KEY in env / Streamlit Secrets.
     """
     store = store or get_store()
     from .audit.llm_audit import get_llm_outcome_summary
     ids = store.list_transcript_ids()
     updated = 0
+    first_error = None
     for tid in ids:
         t = store.get_transcript(tid)
         if not t:
@@ -56,8 +57,13 @@ def backfill_llm_summaries(store=None, api_key: Optional[str] = None) -> int:
         if not run:
             continue
         findings = store.get_findings(tid)
-        summary = get_llm_outcome_summary(t, findings, run.severity_band, api_key=api_key)
+        try:
+            summary = get_llm_outcome_summary(t, findings, run.severity_band, api_key=api_key)
+        except Exception as e:
+            if first_error is None:
+                first_error = str(e)
+            continue
         if summary:
             store.update_audit_run_outcome_summary(tid, summary)
             updated += 1
-    return updated
+    return updated, first_error

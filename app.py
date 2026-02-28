@@ -59,10 +59,15 @@ def main():
             )
         else:
             from src.pipeline import backfill_llm_summaries
-            with st.sidebar.spinner("Calling LLM for each transcript..."):
-                n = backfill_llm_summaries(store=store, api_key=api_key)
+            with st.spinner("Calling LLM for each transcript..."):
+                n, err = backfill_llm_summaries(store=store, api_key=api_key)
             if n == 0:
-                st.sidebar.warning("Updated 0 transcripts. Check that the API key is valid and has credits.")
+                if err:
+                    st.sidebar.error(f"API error: {err[:200]}")
+                else:
+                    st.sidebar.warning(
+                        "Updated 0 transcripts. On Streamlit Cloud: run **Run pipeline** first (same session), then this button. Or check API key and credits."
+                    )
             else:
                 st.sidebar.success(f"Updated {n} transcripts with LLM summaries.")
             st.rerun()
