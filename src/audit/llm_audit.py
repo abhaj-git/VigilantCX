@@ -3,9 +3,13 @@ LLM-based audit: judge tone, intent, and compliance from full transcript text.
 Supports Gemini (preferred, free tier) or OpenAI. Produces a concise outcome summary.
 """
 import os
+import time
 from typing import Optional
 
 from ..data.models import Finding, Transcript
+
+# Retry once after this many seconds when rate limited
+RATE_LIMIT_WAIT_SEC = 62
 
 
 def _transcript_to_text(t: Transcript) -> str:
@@ -84,6 +88,11 @@ def _call_openai(prompt: str, api_key: str) -> Optional[str]:
     return summary or None
 
 
+def _is_rate_limit(err: Exception) -> bool:
+    msg = str(err).strip().lower()
+    return "429" in msg or "rate" in msg or "resource_exhausted" in msg or "quota" in msg
+
+
 def get_llm_outcome_summary(
     transcript: Transcript,
     findings: list[Finding],
@@ -101,30 +110,40 @@ def get_llm_outcome_summary(
         return None
 
     prompt = _build_prompt(transcript, findings, severity_band)
-    summary = None
     err = None
 
     if gemini_key:
-        try:
-            summary = _call_gemini(prompt, gemini_key)
-        except Exception as e:
-            err = e
-    if summary:
-        return summary
+        for attempt in range(2):
+            try:
+                summary = _call_gemini(prompt, gemini_key)
+                if summary:
+                    return summary
+            except Exception as e:
+                err = e
+                if _is_rate_limit(e) and attempt == 0:
+                    time.sleep(RATE_LIMIT_WAIT_SEC)
+                    continue
+                raise
+        if err:
+            if _is_rate_limit(err):
+                raise ValueError("Gemini rate limit. Wait 1–2 minutes, then try one summary at a time.")
+            raise
 
     if openai_key:
-        try:
-            summary = _call_openai(prompt, openai_key)
-        except Exception as e:
-            err = e
-    if summary:
-        return summary
+        for attempt in range(2):
+            try:
+                summary = _call_openai(prompt, openai_key)
+                if summary:
+                    return summary
+            except Exception as e:
+                err = e
+                if _is_rate_limit(e) and attempt == 0:
+                    time.sleep(RATE_LIMIT_WAIT_SEC)
+                    continue
+                raise
+        if err:
+            if _is_rate_limit(err):
+                raise ValueError("OpenAI rate limit. Wait 1–2 minutes, then try one summary at a time.")
+            raise
 
-    if err:
-        msg = str(err).strip()
-        if "429" in msg or "rate" in msg.lower():
-            raise ValueError("API rate limit. Wait a minute and try again.")
-        if "401" in msg or "invalid" in msg.lower() or "API key" in msg:
-            raise ValueError("Invalid API key. Check GEMINI_API_KEY or OPENAI_API_KEY in Secrets or env.")
-        raise
     return None
