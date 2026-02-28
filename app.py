@@ -15,17 +15,23 @@ from src.config_loader import get_score_threshold
 
 
 def _reason_for_outcome(findings: list, severity_band: str) -> str:
-    """Build human-readable reason for outcome from findings."""
+    """Build a concise reason-for-outcome from findings: tone first, then compliance. No API."""
     failed = [f for f in findings if not f.passed]
-    passed_important = [f for f in findings if f.passed and f.severity in ("critical", "high", "moderate")]
+    tone_rules = {"tone_too_casual", "tone_too_strict", "aggressive_or_threatening_tone"}
+    tone_failures = [f for f in failed if f.rule_id in tone_rules]
+    other_failures = [f for f in failed if f.rule_id not in tone_rules]
+    # Build one short sentence: severity + tone (if any) + other
+    band = severity_band.capitalize()
     if severity_band == "good" and not failed:
-        if passed_important:
-            return "Good: " + "; ".join(f.reason for f in passed_important[:3])
-        return "Good: No compliance issues identified."
+        return "Good: Professional tone; no compliance issues."
     if not failed:
-        return severity_band.capitalize() + ": No failures; score band from aggregate."
-    parts = [f.reason for f in failed]
-    return severity_band.capitalize() + ": " + "; ".join(parts)
+        return f"{band}: No rule failures."
+    parts = []
+    if tone_failures:
+        parts.append(tone_failures[0].reason)  # e.g. "Tone too casual with customer"
+    for f in other_failures[:3]:  # max 3 other reasons
+        parts.append(f.reason)
+    return f"{band}: " + "; ".join(parts) + ("." if not parts[-1].endswith(".") else "")
 
 
 def _get_api_key():
@@ -53,8 +59,7 @@ def main():
     persona_filter = st.sidebar.selectbox("Persona", ["All", "Collections", "RAM"], index=0)
     language_filter = st.sidebar.selectbox("Language", ["All", "EN", "ES"], index=0)
 
-    # Optional: bulk "Add LLM summaries" still available in sidebar
-    st.sidebar.caption("LLM: use **Get LLM summary** on each result to avoid rate limits.")
+    st.sidebar.caption("Reason for outcome is from rules (tone + compliance). Optional: **Get LLM summary** on a result for an AI summary.")
 
     all_ids = store.list_transcript_ids()
     if not all_ids:
