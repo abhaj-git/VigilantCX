@@ -34,17 +34,21 @@ def _reason_for_outcome(findings: list, severity_band: str) -> str:
     return f"{band}: " + "; ".join(parts) + ("." if not parts[-1].endswith(".") else "")
 
 
-def _get_api_key():
+def _get_llm_keys():
+    """Return (gemini_key, openai_key) from Secrets or env. Gemini is tried first."""
     import os
-    api_key = None
+    gemini_key = openai_key = None
     try:
-        if hasattr(st, "secrets") and st.secrets.get("OPENAI_API_KEY"):
-            api_key = (st.secrets["OPENAI_API_KEY"] or "").strip().strip('"').strip("'")
+        if hasattr(st, "secrets"):
+            gemini_key = (st.secrets.get("GEMINI_API_KEY") or "").strip().strip('"').strip("'")
+            openai_key = (st.secrets.get("OPENAI_API_KEY") or "").strip().strip('"').strip("'")
     except Exception:
         pass
-    if not api_key:
-        api_key = (os.environ.get("OPENAI_API_KEY") or "").strip().strip('"').strip("'")
-    return api_key or None
+    if not gemini_key:
+        gemini_key = (os.environ.get("GEMINI_API_KEY") or "").strip().strip('"').strip("'")
+    if not openai_key:
+        openai_key = (os.environ.get("OPENAI_API_KEY") or "").strip().strip('"').strip("'")
+    return gemini_key or None, openai_key or None
 
 
 def main():
@@ -108,16 +112,19 @@ def main():
                 st.caption(f"Intended risk: {t.intended_risk_level}")
                 if is_overridden:
                     st.caption("✅ Overridden")
-                # Per-result LLM summary: only call API when user clicks
-                api_key = _get_api_key()
+                # Per-result LLM summary: Gemini (preferred) or OpenAI
+                gemini_key, openai_key = _get_llm_keys()
                 if st.button("Get LLM summary" if not run.outcome_summary else "Regenerate summary", key=f"llm_{tid}"):
-                    if not api_key:
-                        st.error("Set OPENAI_API_KEY in Secrets or env.")
+                    if not gemini_key and not openai_key:
+                        st.error("Set GEMINI_API_KEY or OPENAI_API_KEY in Secrets or env.")
                     else:
                         from src.audit.llm_audit import get_llm_outcome_summary
                         with st.spinner("Generating..."):
                             try:
-                                summary = get_llm_outcome_summary(t, findings, run.severity_band, api_key=api_key)
+                                summary = get_llm_outcome_summary(
+                                    t, findings, run.severity_band,
+                                    api_key=openai_key, gemini_api_key=gemini_key,
+                                )
                                 if summary:
                                     store.update_audit_run_outcome_summary(tid, summary)
                                     st.rerun()

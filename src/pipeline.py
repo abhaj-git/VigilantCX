@@ -47,11 +47,14 @@ def run_pipeline(store=None, max_per_scenario: int = 1, use_llm: bool = False) -
     return ids
 
 
-def backfill_llm_summaries(store=None, api_key: Optional[str] = None) -> tuple[int, Optional[str]]:
+def backfill_llm_summaries(
+    store=None,
+    api_key: Optional[str] = None,
+    gemini_api_key: Optional[str] = None,
+) -> tuple[int, Optional[str]]:
     """
-    For all existing transcripts, call the LLM to get an outcome summary and update
-    the latest audit run. Returns (number_updated, error_message).
-    Pass api_key, or set OPENAI_API_KEY in env / Streamlit Secrets.
+    For all existing transcripts, call the LLM (Gemini or OpenAI) and update outcome summary.
+    Returns (number_updated, error_message). Set GEMINI_API_KEY or OPENAI_API_KEY in env/Secrets.
     """
     store = store or get_store()
     from .audit.llm_audit import get_llm_outcome_summary
@@ -67,7 +70,10 @@ def backfill_llm_summaries(store=None, api_key: Optional[str] = None) -> tuple[i
             continue
         findings = store.get_findings(tid)
         try:
-            summary = get_llm_outcome_summary(t, findings, run.severity_band, api_key=api_key)
+            summary = get_llm_outcome_summary(
+                t, findings, run.severity_band,
+                api_key=api_key, gemini_api_key=gemini_api_key,
+            )
         except Exception as e:
             if first_error is None:
                 first_error = str(e)
