@@ -46,11 +46,11 @@ def main():
         api_key = None
         try:
             if hasattr(st, "secrets") and st.secrets.get("OPENAI_API_KEY"):
-                api_key = st.secrets["OPENAI_API_KEY"]
+                api_key = (st.secrets["OPENAI_API_KEY"] or "").strip().strip('"').strip("'")
         except Exception:
             pass
         if not api_key:
-            api_key = os.environ.get("OPENAI_API_KEY")
+            api_key = (os.environ.get("OPENAI_API_KEY") or "").strip().strip('"').strip("'")
         if not api_key:
             st.sidebar.error(
                 "OPENAI_API_KEY not found. "
@@ -63,14 +63,15 @@ def main():
                 n, err = backfill_llm_summaries(store=store, api_key=api_key)
             if n == 0:
                 if err:
-                    st.sidebar.error(f"API error: {err[:200]}")
+                    st.sidebar.error(f"API error: {err[:300]}")
                 else:
                     st.sidebar.warning(
                         "Updated 0 transcripts. On Streamlit Cloud: run **Run pipeline** first (same session), then this button. Or check API key and credits."
                     )
+                # Don't rerun so the message stays visible
             else:
                 st.sidebar.success(f"Updated {n} transcripts with LLM summaries.")
-            st.rerun()
+                st.rerun()
 
     all_ids = store.list_transcript_ids()
     if not all_ids:

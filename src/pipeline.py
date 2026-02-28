@@ -2,13 +2,18 @@
 Pipeline: generate transcripts, run audit, score, and persist.
 Call this to populate the DB before viewing the dashboard.
 """
+import time
+from typing import Optional
+
 from .data.store import get_store
 from .data.models import AuditRun
 from .synthetic.generator import generate_transcripts
 from .audit.engine import audit_transcript
 from .audit.llm_audit import get_llm_outcome_summary
 from .scoring.scorer import score_findings
-from typing import Optional
+
+# Delay between LLM calls to avoid OpenAI rate limit
+LLM_CALL_DELAY_SECONDS = 1.5
 
 
 def run_pipeline(store=None, max_per_scenario: int = 1, use_llm: bool = True) -> list[str]:
@@ -25,7 +30,11 @@ def run_pipeline(store=None, max_per_scenario: int = 1, use_llm: bool = True) ->
         score, severity_band, has_critical = score_findings(findings)
         outcome_summary = None
         if use_llm:
-            outcome_summary = get_llm_outcome_summary(t, findings, severity_band)
+            try:
+                outcome_summary = get_llm_outcome_summary(t, findings, severity_band)
+            except Exception:
+                outcome_summary = None  # don't fail whole pipeline on one LLM error
+            time.sleep(LLM_CALL_DELAY_SECONDS)  # avoid rate limit
         store.insert_audit_run(AuditRun(
             id=None,
             transcript_id=t.id,
@@ -66,4 +75,5 @@ def backfill_llm_summaries(store=None, api_key: Optional[str] = None) -> tuple[i
         if summary:
             store.update_audit_run_outcome_summary(tid, summary)
             updated += 1
+        time.sleep(LLM_CALL_DELAY_SECONDS)  # avoid rate limit
     return updated, first_error

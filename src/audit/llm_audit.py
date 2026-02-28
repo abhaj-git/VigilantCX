@@ -34,7 +34,10 @@ def get_llm_outcome_summary(
     Call LLM to assess tone, intent, compliance from full text and return a concise
     (1-2 sentence) reason-for-outcome summary. Returns None if no API key or on error.
     """
-    api_key = api_key or os.environ.get("OPENAI_API_KEY")
+    raw_key = api_key or os.environ.get("OPENAI_API_KEY")
+    if not raw_key:
+        return None
+    api_key = (raw_key or "").strip().strip('"').strip("'")
     if not api_key:
         return None
 
@@ -43,7 +46,7 @@ def get_llm_outcome_summary(
     except ImportError:
         return None
 
-    client = openai.OpenAI(api_key=api_key)
+    client = openai.OpenAI(api_key=api_key, timeout=60.0)
     text = _transcript_to_text(transcript)
     persona = "Collections (regulated collections agent, customer call)" if transcript.persona_id == "collections" else "RAM (dealer relationship / inside sales, dealer call)"
     findings_ctx = _findings_context(findings, severity_band)
@@ -71,11 +74,18 @@ Respond with ONLY the 1-2 sentence summary, no labels or bullet points. Examples
     try:
         resp = client.chat.completions.create(
             model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}],
+            messages=[{"role": "user", "content": prompt[:12000]}],  # stay under context limits
             max_tokens=150,
             temperature=0.3,
         )
         summary = (resp.choices[0].message.content or "").strip()
         return summary if summary else None
     except Exception as e:
-        raise  # so caller can show API/auth errors
+        err_msg = str(e).strip()
+        if "401" in err_msg or "Incorrect API key" in err_msg or "invalid_api_key" in err_msg:
+            raise ValueError("Invalid OpenAI API key. Check key in Secrets or env.")
+        if "429" in err_msg or "rate" in err_msg.lower():
+            raise ValueError("OpenAI rate limit. Wait a minute and try again.")
+        if "503" in err_msg or "overloaded" in err_msg.lower():
+            raise ValueError("OpenAI temporarily overloaded. Try again in a moment.")
+        raise
