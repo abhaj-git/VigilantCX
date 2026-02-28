@@ -62,11 +62,18 @@ def _call_gemini(prompt: str, api_key: str) -> Optional[str]:
     if not key:
         return None
     genai.configure(api_key=key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
-    resp = model.generate_content(prompt)
-    if not resp or not getattr(resp, "text", None):
-        return None
-    return resp.text.strip()
+    # Try current model names (v1beta); fallback if one 404s
+    for model_name in ("gemini-2.0-flash", "gemini-1.5-flash-latest", "gemini-pro"):
+        try:
+            model = genai.GenerativeModel(model_name)
+            resp = model.generate_content(prompt)
+            if resp and getattr(resp, "text", None):
+                return resp.text.strip()
+        except Exception as e:
+            if "404" in str(e) or "not found" in str(e).lower():
+                continue
+            raise
+    return None
 
 
 def _call_openai(prompt: str, api_key: str) -> Optional[str]:
