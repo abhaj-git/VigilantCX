@@ -40,6 +40,33 @@ def main():
     persona_filter = st.sidebar.selectbox("Persona", ["All", "Collections", "RAM"], index=0)
     language_filter = st.sidebar.selectbox("Language", ["All", "EN", "ES"], index=0)
 
+    if st.sidebar.button("Add LLM summaries to existing runs"):
+        import os
+        # Key from Streamlit Secrets (Cloud) or environment (local)
+        api_key = None
+        try:
+            if hasattr(st, "secrets") and st.secrets.get("OPENAI_API_KEY"):
+                api_key = st.secrets["OPENAI_API_KEY"]
+        except Exception:
+            pass
+        if not api_key:
+            api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            st.sidebar.error(
+                "OPENAI_API_KEY not found. "
+                "Local: In the same terminal run 'export OPENAI_API_KEY=\"sk-...\"' then stop Streamlit (Ctrl+C) and start it again with 'streamlit run app.py'. "
+                "Cloud: Add OPENAI_API_KEY in app Settings → Secrets."
+            )
+        else:
+            from src.pipeline import backfill_llm_summaries
+            with st.sidebar.spinner("Calling LLM for each transcript..."):
+                n = backfill_llm_summaries(store=store, api_key=api_key)
+            if n == 0:
+                st.sidebar.warning("Updated 0 transcripts. Check that the API key is valid and has credits.")
+            else:
+                st.sidebar.success(f"Updated {n} transcripts with LLM summaries.")
+            st.rerun()
+
     all_ids = store.list_transcript_ids()
     if not all_ids:
         st.info("No transcripts yet. Run the pipeline to generate and audit transcripts.")
@@ -69,7 +96,7 @@ def main():
         if not run:
             continue
 
-        reason = _reason_for_outcome(findings, run.severity_band)
+        reason = run.outcome_summary or _reason_for_outcome(findings, run.severity_band)
         overrides = store.get_overrides_for_transcript(tid)
         is_overridden = any(o.finding_id is None for o in overrides)
 

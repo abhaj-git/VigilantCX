@@ -37,6 +37,14 @@ collections_rules:
     weight: 20
     severity: moderate
     reason: "No recap of arrangement"
+  tone_too_casual:
+    weight: 15
+    severity: moderate
+    reason: "Tone too casual with customer"
+  tone_too_strict:
+    weight: 18
+    severity: moderate
+    reason: "Tone too strict or harsh with customer"
 
 # Positive checks (pass = good); if missing, contribute to score
 collections_positive_checks:
@@ -82,6 +90,14 @@ ram_rules:
     weight: 15
     severity: moderate
     reason: "Transactional tone harming relationship"
+  tone_too_casual:
+    weight: 15
+    severity: moderate
+    reason: "Tone too casual with dealer"
+  tone_too_strict:
+    weight: 18
+    severity: moderate
+    reason: "Tone too strict or harsh with dealer"
 
 ram_positive_checks:
   has_greeting:

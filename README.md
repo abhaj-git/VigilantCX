@@ -9,6 +9,8 @@ cd VigilantCX
 pip install -r requirements.txt
 ```
 
+**Optional – LLM outcome summaries:** Set `OPENAI_API_KEY` in your environment to get concise, NLP-based reason-for-outcome summaries (tone, intent, compliance from full transcript). Without it, the app uses rule-based reasons only.
+
 ## Run pipeline (generate + audit)
 
 Generate synthetic transcripts (EN/ES, good/moderate/high/critical) for Collections and RAM personas, run the audit engine, and persist scores:
@@ -26,7 +28,7 @@ streamlit run app.py
 ```
 
 - **Default view**: Only below-threshold or critical transcripts.
-- **Reason for outcome**: Each card shows what caused the result (e.g. "Critical: Missing Mini-Miranda; no right-party verification").
+- **Reason for outcome**: Each card shows an LLM-generated concise summary (tone, compliance, intent from full text) when `OPENAI_API_KEY` is set; otherwise the rule-based reason list.
 - **Filters**: Persona (Collections / RAM), Language (EN / ES). Option to show all transcripts.
 - **Expand**: View full transcript and per-rule findings.
 
@@ -35,7 +37,7 @@ streamlit run app.py
 - `config/` – Personas, scenarios, rule weights, score threshold.
 - `src/data/` – SQLite store, transcript/finding/override models.
 - `src/synthetic/` – Template-based transcript generator (EN/ES).
-- `src/audit/` – Rule engine keyed to persona failure modes.
+- `src/audit/` – Rule engine; `llm_audit.py` for LLM-based tone/compliance/summary.
 - `src/scoring/` – Weighted score, severity band, filter.
 - `src/overrides/` – Compliance override apply logic.
 - `app.py` – Streamlit dashboard.

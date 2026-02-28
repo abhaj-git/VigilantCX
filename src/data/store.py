@@ -26,7 +26,11 @@ class Store:
         schema = (Path(__file__).resolve().parent / "schema.sql").read_text()
         conn = sqlite3.connect(self.db_path)
         conn.executescript(schema)
-        conn.commit()
+        try:
+            conn.execute("ALTER TABLE audit_runs ADD COLUMN outcome_summary TEXT")
+            conn.commit()
+        except sqlite3.OperationalError:
+            pass
         conn.close()
 
     def _conn(self):
@@ -105,9 +109,9 @@ class Store:
         conn = self._conn()
         try:
             conn.execute(
-                """INSERT INTO audit_runs (transcript_id, score, severity_band, has_critical, run_at)
-                   VALUES (?, ?, ?, ?, ?)""",
-                (run.transcript_id, run.score, run.severity_band, 1 if run.has_critical else 0, run.run_at or datetime.utcnow().isoformat() + "Z"),
+                """INSERT INTO audit_runs (transcript_id, score, severity_band, has_critical, run_at, outcome_summary)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                (run.transcript_id, run.score, run.severity_band, 1 if run.has_critical else 0, run.run_at or datetime.utcnow().isoformat() + "Z", run.outcome_summary),
             )
             conn.commit()
         finally:
@@ -151,6 +155,7 @@ class Store:
                 severity_band=row["severity_band"],
                 has_critical=bool(row["has_critical"]),
                 run_at=row["run_at"],
+                outcome_summary=row.get("outcome_summary"),
             )
         finally:
             conn.close()
@@ -194,5 +199,19 @@ class Store:
                 "SELECT DISTINCT transcript_id FROM overrides WHERE finding_id IS NULL"
             ).fetchall()
             return {r[0] for r in rows}
+        finally:
+            conn.close()
+
+    def update_audit_run_outcome_summary(self, transcript_id: str, outcome_summary: Optional[str]) -> None:
+        """Update the latest audit run for this transcript with an LLM outcome summary."""
+        conn = self._conn()
+        try:
+            conn.execute(
+                """UPDATE audit_runs SET outcome_summary = ? WHERE id = (
+                    SELECT id FROM audit_runs WHERE transcript_id = ? ORDER BY run_at DESC LIMIT 1
+                )""",
+                (outcome_summary, transcript_id),
+            )
+            conn.commit()
         finally:
             conn.close()

@@ -148,6 +148,22 @@ def ram_no_transactional_tone(t: Transcript) -> bool:
     return True
 
 
+# --- Tone guardrails (both personas): too casual vs too strict ---
+
+def tone_not_too_casual(t: Transcript) -> bool:
+    """Pass if agent avoids unprofessional/casual language with customer or dealer."""
+    agent = _agent_text(t)
+    casual = ["hey ", " hey,", "dude", "yeah man", "no worries", "gonna", "wanna", "gotta", "kinda", "sorta", "okay so", "cool ", "awesome", "totally", "super ", "oh man", "dang", "yep ", "yup ", "nope ", "sure thing", "no problemo", "de nada", "tranquilo", "dale "]
+    return not _has_phrase(agent, *casual)
+
+
+def tone_not_too_strict(t: Transcript) -> bool:
+    """Pass if agent avoids harsh, cold, or intimidating language."""
+    agent = _agent_text(t)
+    strict = ["you need to", "you must", "right now", "no excuses", "don't waste my", "listen here", "you have to", "or else", "last chance", "no ifs", "no buts", "tiene que", "debe ", "ahora mismo", "sin excusas"]
+    return not _has_phrase(agent, *strict)
+
+
 # Rule function registry by persona. Each returns True if transcript PASSES (good), False if fails.
 COLLECTIONS_RULES = {
     "missing_mini_miranda": collections_mini_miranda,
@@ -158,6 +174,8 @@ COLLECTIONS_RULES = {
     "third_party_disclosure_violation": collections_no_third_party_disclosure,
     "promising_outside_policy_authority": collections_no_promise_outside_authority,
     "improper_handling_of_disputes": lambda t: True,
+    "tone_too_casual": tone_not_too_casual,
+    "tone_too_strict": tone_not_too_strict,
 }
 
 COLLECTIONS_POSITIVE = {
@@ -174,6 +192,8 @@ RAM_RULES = {
     "no_confirmation_of_understanding": ram_confirmation_of_understanding,
     "no_recap": ram_has_recap,
     "transactional_tone_harming_relationship": ram_no_transactional_tone,
+    "tone_too_casual": tone_not_too_casual,
+    "tone_too_strict": tone_not_too_strict,
 }
 
 RAM_POSITIVE = {

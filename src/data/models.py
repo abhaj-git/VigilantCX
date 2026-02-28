@@ -58,3 +58,4 @@ class AuditRun:
     severity_band: str
     has_critical: bool
     run_at: Optional[str] = None
+    outcome_summary: Optional[str] = None  # LLM-generated concise reason for outcome
