@@ -16,7 +16,7 @@ from .scoring.scorer import score_findings
 LLM_CALL_DELAY_SECONDS = 1.5
 
 
-def run_pipeline(store=None, max_per_scenario: int = 1, use_llm: bool = True) -> list[str]:
+def run_pipeline(store=None, max_per_scenario: int = 1, use_llm: bool = False) -> list[str]:
     """
     Generate transcripts, audit each, score, optionally get LLM outcome summary, and save.
     Returns list of transcript IDs. Set use_llm=False to skip LLM (no OPENAI_API_KEY needed).

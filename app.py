@@ -28,6 +28,19 @@ def _reason_for_outcome(findings: list, severity_band: str) -> str:
     return severity_band.capitalize() + ": " + "; ".join(parts)
 
 
+def _get_api_key():
+    import os
+    api_key = None
+    try:
+        if hasattr(st, "secrets") and st.secrets.get("OPENAI_API_KEY"):
+            api_key = (st.secrets["OPENAI_API_KEY"] or "").strip().strip('"').strip("'")
+    except Exception:
+        pass
+    if not api_key:
+        api_key = (os.environ.get("OPENAI_API_KEY") or "").strip().strip('"').strip("'")
+    return api_key or None
+
+
 def main():
     st.set_page_config(page_title="VigilantCX Audit Explorer", layout="wide")
     st.title("Risk-Based Audit Explorer")
@@ -40,38 +53,8 @@ def main():
     persona_filter = st.sidebar.selectbox("Persona", ["All", "Collections", "RAM"], index=0)
     language_filter = st.sidebar.selectbox("Language", ["All", "EN", "ES"], index=0)
 
-    if st.sidebar.button("Add LLM summaries to existing runs"):
-        import os
-        # Key from Streamlit Secrets (Cloud) or environment (local)
-        api_key = None
-        try:
-            if hasattr(st, "secrets") and st.secrets.get("OPENAI_API_KEY"):
-                api_key = (st.secrets["OPENAI_API_KEY"] or "").strip().strip('"').strip("'")
-        except Exception:
-            pass
-        if not api_key:
-            api_key = (os.environ.get("OPENAI_API_KEY") or "").strip().strip('"').strip("'")
-        if not api_key:
-            st.sidebar.error(
-                "OPENAI_API_KEY not found. "
-                "Local: In the same terminal run 'export OPENAI_API_KEY=\"sk-...\"' then stop Streamlit (Ctrl+C) and start it again with 'streamlit run app.py'. "
-                "Cloud: Add OPENAI_API_KEY in app Settings → Secrets."
-            )
-        else:
-            from src.pipeline import backfill_llm_summaries
-            with st.spinner("Calling LLM for each transcript..."):
-                n, err = backfill_llm_summaries(store=store, api_key=api_key)
-            if n == 0:
-                if err:
-                    st.sidebar.error(f"API error: {err[:300]}")
-                else:
-                    st.sidebar.warning(
-                        "Updated 0 transcripts. On Streamlit Cloud: run **Run pipeline** first (same session), then this button. Or check API key and credits."
-                    )
-                # Don't rerun so the message stays visible
-            else:
-                st.sidebar.success(f"Updated {n} transcripts with LLM summaries.")
-                st.rerun()
+    # Optional: bulk "Add LLM summaries" still available in sidebar
+    st.sidebar.caption("LLM: use **Get LLM summary** on each result to avoid rate limits.")
 
     all_ids = store.list_transcript_ids()
     if not all_ids:
@@ -79,7 +62,7 @@ def main():
         if st.button("Run pipeline (generate + audit)"):
             from src.pipeline import run_pipeline
             with st.spinner("Generating and auditing..."):
-                run_pipeline(store=store, max_per_scenario=1)
+                run_pipeline(store=store, max_per_scenario=1, use_llm=False)
             st.rerun()
         return
 
@@ -120,6 +103,23 @@ def main():
                 st.caption(f"Intended risk: {t.intended_risk_level}")
                 if is_overridden:
                     st.caption("✅ Overridden")
+                # Per-result LLM summary: only call API when user clicks
+                api_key = _get_api_key()
+                if st.button("Get LLM summary" if not run.outcome_summary else "Regenerate summary", key=f"llm_{tid}"):
+                    if not api_key:
+                        st.error("Set OPENAI_API_KEY in Secrets or env.")
+                    else:
+                        from src.audit.llm_audit import get_llm_outcome_summary
+                        with st.spinner("Generating..."):
+                            try:
+                                summary = get_llm_outcome_summary(t, findings, run.severity_band, api_key=api_key)
+                                if summary:
+                                    store.update_audit_run_outcome_summary(tid, summary)
+                                    st.rerun()
+                                else:
+                                    st.warning("No summary returned.")
+                            except Exception as e:
+                                st.error(str(e)[:200])
 
             with st.expander("View transcript and findings"):
                 for turn in t.turns:
