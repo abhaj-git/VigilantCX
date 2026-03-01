@@ -44,5 +44,22 @@ CREATE TABLE IF NOT EXISTS overrides (
     FOREIGN KEY (transcript_id) REFERENCES transcripts(id)
 );
 
+CREATE TABLE IF NOT EXISTS dpa_events (
+    transcript_id TEXT NOT NULL,
+    timestamp_sec REAL NOT NULL,
+    screen_id TEXT NOT NULL,
+    FOREIGN KEY (transcript_id) REFERENCES transcripts(id)
+);
+CREATE TABLE IF NOT EXISTS dpa_metrics (
+    transcript_id TEXT PRIMARY KEY,
+    call_duration_sec REAL NOT NULL,
+    idle_sec REAL NOT NULL,
+    idle_ratio REAL NOT NULL,
+    max_dwell_sec REAL NOT NULL,
+    dwell_by_screen TEXT NOT NULL,
+    FOREIGN KEY (transcript_id) REFERENCES transcripts(id)
+);
+
 CREATE INDEX IF NOT EXISTS idx_findings_transcript ON findings(transcript_id);
 CREATE INDEX IF NOT EXISTS idx_overrides_transcript ON overrides(transcript_id);
+CREATE INDEX IF NOT EXISTS idx_dpa_events_transcript ON dpa_events(transcript_id);

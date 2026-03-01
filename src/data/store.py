@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from .models import AuditRun, Finding, Override, Transcript, TranscriptTurn
+from .models import AuditRun, DPAEvent, DPAMetrics, Finding, Override, Transcript, TranscriptTurn
 
 DB_PATH = Path(__file__).resolve().parent.parent.parent / "data" / "vigilantcx.db"
 
@@ -31,6 +31,12 @@ class Store:
             conn.commit()
         except sqlite3.OperationalError:
             pass
+        for stmt in (
+            "CREATE TABLE IF NOT EXISTS dpa_events (transcript_id TEXT NOT NULL, timestamp_sec REAL NOT NULL, screen_id TEXT NOT NULL)",
+            "CREATE TABLE IF NOT EXISTS dpa_metrics (transcript_id TEXT PRIMARY KEY, call_duration_sec REAL NOT NULL, idle_sec REAL NOT NULL, idle_ratio REAL NOT NULL, max_dwell_sec REAL NOT NULL, dwell_by_screen TEXT NOT NULL)",
+        ):
+            conn.execute(stmt)
+        conn.commit()
         conn.close()
 
     def _conn(self):
@@ -92,6 +98,14 @@ class Store:
         finally:
             conn.close()
 
+    def delete_findings(self, transcript_id: str) -> None:
+        conn = self._conn()
+        try:
+            conn.execute("DELETE FROM findings WHERE transcript_id = ?", (transcript_id,))
+            conn.commit()
+        finally:
+            conn.close()
+
     def insert_findings(self, transcript_id: str, findings: list[Finding]) -> None:
         conn = self._conn()
         try:
@@ -135,6 +149,18 @@ class Store:
                 )
                 for r in rows
             ]
+        finally:
+            conn.close()
+
+    def update_latest_audit_run(self, transcript_id: str, score: float, severity_band: str, has_critical: bool) -> None:
+        conn = self._conn()
+        try:
+            conn.execute(
+                """UPDATE audit_runs SET score = ?, severity_band = ?, has_critical = ?
+                   WHERE id = (SELECT id FROM audit_runs WHERE transcript_id = ? ORDER BY run_at DESC LIMIT 1)""",
+                (score, severity_band, 1 if has_critical else 0, transcript_id),
+            )
+            conn.commit()
         finally:
             conn.close()
 
@@ -213,5 +239,63 @@ class Store:
                 (outcome_summary, transcript_id),
             )
             conn.commit()
+        finally:
+            conn.close()
+
+    def insert_dpa_events(self, transcript_id: str, events: list[tuple[float, str]]) -> None:
+        """Insert DPA events: list of (timestamp_sec, screen_id). Replaces any existing for this transcript."""
+        conn = self._conn()
+        try:
+            conn.execute("DELETE FROM dpa_events WHERE transcript_id = ?", (transcript_id,))
+            for ts, screen_id in events:
+                conn.execute(
+                    "INSERT INTO dpa_events (transcript_id, timestamp_sec, screen_id) VALUES (?, ?, ?)",
+                    (transcript_id, ts, screen_id),
+                )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def insert_dpa_metrics(self, m: "DPAMetrics") -> None:
+        """Insert or replace DPA metrics for a transcript."""
+        conn = self._conn()
+        try:
+            conn.execute(
+                """INSERT OR REPLACE INTO dpa_metrics (transcript_id, call_duration_sec, idle_sec, idle_ratio, max_dwell_sec, dwell_by_screen)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                (m.transcript_id, m.call_duration_sec, m.idle_sec, m.idle_ratio, m.max_dwell_sec, json.dumps(m.dwell_by_screen)),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_dpa_events(self, transcript_id: str) -> list[tuple[float, str]]:
+        """Return list of (timestamp_sec, screen_id) ordered by time."""
+        conn = self._conn()
+        conn.row_factory = _dict_factory
+        try:
+            rows = conn.execute(
+                "SELECT timestamp_sec, screen_id FROM dpa_events WHERE transcript_id = ? ORDER BY timestamp_sec",
+                (transcript_id,),
+            ).fetchall()
+            return [(r["timestamp_sec"], r["screen_id"]) for r in rows]
+        finally:
+            conn.close()
+
+    def get_dpa_metrics(self, transcript_id: str) -> Optional["DPAMetrics"]:
+        conn = self._conn()
+        conn.row_factory = _dict_factory
+        try:
+            row = conn.execute("SELECT * FROM dpa_metrics WHERE transcript_id = ?", (transcript_id,)).fetchone()
+            if not row:
+                return None
+            return DPAMetrics(
+                transcript_id=row["transcript_id"],
+                call_duration_sec=row["call_duration_sec"],
+                idle_sec=row["idle_sec"],
+                idle_ratio=row["idle_ratio"],
+                max_dwell_sec=row["max_dwell_sec"],
+                dwell_by_screen=json.loads(row["dwell_by_screen"]),
+            )
         finally:
             conn.close()

@@ -8,6 +8,12 @@ from pathlib import Path
 # Ensure project root is on path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).resolve().parent / ".env")
+except ImportError:
+    pass
+
 import streamlit as st
 from src.data.store import get_store
 from src.scoring.filter import filter_actionable
@@ -15,12 +21,13 @@ from src.config_loader import get_score_threshold
 
 
 def _reason_for_outcome(findings: list, severity_band: str) -> str:
-    """Build a concise reason-for-outcome from findings: tone first, then compliance. No API."""
+    """Build a concise reason-for-outcome from findings: tone first, then compliance, then process (idle/dwell)."""
     failed = [f for f in findings if not f.passed]
     tone_rules = {"tone_too_casual", "tone_too_strict", "aggressive_or_threatening_tone"}
+    process_rules = {"high_idle_ratio", "high_dwell"}
     tone_failures = [f for f in failed if f.rule_id in tone_rules]
-    other_failures = [f for f in failed if f.rule_id not in tone_rules]
-    # Build one short sentence: severity + tone (if any) + other
+    process_failures = [f for f in failed if f.rule_id in process_rules]
+    other_failures = [f for f in failed if f.rule_id not in tone_rules and f.rule_id not in process_rules]
     band = severity_band.capitalize()
     if severity_band == "good" and not failed:
         return "Good: Professional tone; no compliance issues."
@@ -28,8 +35,10 @@ def _reason_for_outcome(findings: list, severity_band: str) -> str:
         return f"{band}: No rule failures."
     parts = []
     if tone_failures:
-        parts.append(tone_failures[0].reason)  # e.g. "Tone too casual with customer"
-    for f in other_failures[:3]:  # max 3 other reasons
+        parts.append(tone_failures[0].reason)
+    for f in other_failures[:3]:
+        parts.append(f.reason)
+    for f in process_failures:
         parts.append(f.reason)
     return f"{band}: " + "; ".join(parts) + ("." if not parts[-1].endswith(".") else "")
 
@@ -63,7 +72,7 @@ def main():
     persona_filter = st.sidebar.selectbox("Persona", ["All", "Collections", "RAM"], index=0)
     language_filter = st.sidebar.selectbox("Language", ["All", "EN", "ES"], index=0)
 
-    st.sidebar.caption("Reason for outcome is from rules (tone + compliance). Optional: **Get LLM summary** on a result for an AI summary.")
+    st.sidebar.caption("Reason for outcome is from rules (tone + compliance). Optional: **Get LLM summary** on a result for an AI summary. *(Free-tier API quotas can be very low; the rule-based reason is always available.)*")
 
     all_ids = store.list_transcript_ids()
     if not all_ids:
@@ -74,6 +83,14 @@ def main():
                 run_pipeline(store=store, max_per_scenario=1, use_llm=False)
             st.rerun()
         return
+
+    missing_dpa = [tid for tid in all_ids if not store.get_dpa_metrics(tid)]
+    if missing_dpa and st.sidebar.button("Backfill DPA (synthetic) for existing transcripts"):
+        from src.pipeline import backfill_dpa
+        with st.spinner("Generating DPA and re-auditing..."):
+            n = backfill_dpa(store=store)
+        st.sidebar.success(f"Updated {n} transcript(s) with DPA metrics.")
+        st.rerun()
 
     if show_all:
         actionable_ids = all_ids
@@ -97,6 +114,7 @@ def main():
         reason = run.outcome_summary or _reason_for_outcome(findings, run.severity_band)
         overrides = store.get_overrides_for_transcript(tid)
         is_overridden = any(o.finding_id is None for o in overrides)
+        dpa_metrics = store.get_dpa_metrics(tid)
 
         band_color = {"critical": "🔴", "high": "🟠", "moderate": "🟡", "good": "🟢"}.get(run.severity_band, "⚪")
         with st.container():
@@ -104,6 +122,11 @@ def main():
             with col1:
                 st.subheader(f"{band_color} {t.id}")
                 st.markdown(f"**Reason for outcome:** {reason}")
+                if dpa_metrics:
+                    st.caption(
+                        f"**Idle:** {int(dpa_metrics.idle_ratio * 100)}% (no screen activity) — "
+                        f"**Dwell (max):** {dpa_metrics.max_dwell_sec / 60:.1f}m (time on one screen)"
+                    )
             with col2:
                 st.metric("Score", f"{run.score:.1f}")
                 st.caption(f"Band: {run.severity_band}" + (" (critical)" if run.has_critical else ""))

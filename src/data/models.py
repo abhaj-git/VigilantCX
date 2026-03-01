@@ -59,3 +59,23 @@ class AuditRun:
     has_critical: bool
     run_at: Optional[str] = None
     outcome_summary: Optional[str] = None  # LLM-generated concise reason for outcome
+
+
+# DPA (Desktop Process Analytics): screen events and computed process metrics
+# Idle time = time with no screen activity (gaps between events). High = disengaged/distracted.
+# Dwell time = time on a single screen before switching. High = slow/stuck on one screen.
+@dataclass
+class DPAEvent:
+    transcript_id: str
+    timestamp_sec: float
+    screen_id: str  # e.g. login, account_summary, payment, disclosure, wrap_up
+
+
+@dataclass
+class DPAMetrics:
+    transcript_id: str
+    call_duration_sec: float
+    idle_sec: float  # total time with no screen activity (gaps between events)
+    idle_ratio: float  # idle_sec / call_duration_sec (0–1)
+    max_dwell_sec: float  # longest time on any single screen
+    dwell_by_screen: dict  # screen_id -> seconds on that screen

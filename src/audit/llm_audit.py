@@ -100,6 +100,19 @@ def _is_rate_limit(err: Exception) -> bool:
     return "429" in msg or "rate" in msg or "resource_exhausted" in msg or "quota" in msg
 
 
+def _is_quota_exceeded(err: Exception) -> bool:
+    """Quota exceeded = don't retry (won't help). Rate limit = retry might help."""
+    msg = str(err).strip().lower()
+    return "quota" in msg or "exceeded your current" in msg or "billing" in msg
+
+
+def _rate_limit_message(err: Exception, provider: str = "Gemini") -> str:
+    msg = str(err).strip().lower()
+    if "quota" in msg:
+        return f"{provider} free tier quota exceeded. Quotas often reset in a few minutes or daily. The rule-based reason above is still valid. Try again later or check https://ai.google.dev/gemini-api/docs/rate-limits"
+    return f"{provider} rate limit. Wait 1–2 minutes, then try one summary at a time."
+
+
 def get_llm_outcome_summary(
     transcript: Transcript,
     findings: list[Finding],
@@ -127,13 +140,14 @@ def get_llm_outcome_summary(
                     return summary
             except Exception as e:
                 err = e
-                if _is_rate_limit(e) and attempt == 0:
+                # Don't retry on quota exceeded (free tier); only retry on transient rate limit
+                if _is_rate_limit(e) and not _is_quota_exceeded(e) and attempt == 0:
                     time.sleep(RATE_LIMIT_WAIT_SEC)
                     continue
                 raise
         if err:
             if _is_rate_limit(err):
-                raise ValueError("Gemini rate limit. Wait 1–2 minutes, then try one summary at a time.")
+                raise ValueError(_rate_limit_message(err, "Gemini"))
             raise
 
     if openai_key:
@@ -144,13 +158,13 @@ def get_llm_outcome_summary(
                     return summary
             except Exception as e:
                 err = e
-                if _is_rate_limit(e) and attempt == 0:
+                if _is_rate_limit(e) and not _is_quota_exceeded(e) and attempt == 0:
                     time.sleep(RATE_LIMIT_WAIT_SEC)
                     continue
                 raise
         if err:
             if _is_rate_limit(err):
-                raise ValueError("OpenAI rate limit. Wait 1–2 minutes, then try one summary at a time.")
+                raise ValueError(_rate_limit_message(err, "OpenAI"))
             raise
 
     return None

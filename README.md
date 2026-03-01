@@ -9,7 +9,10 @@ cd VigilantCX
 pip install -r requirements.txt
 ```
 
-**Optional – LLM outcome summaries:** Set `OPENAI_API_KEY` in your environment to get concise, NLP-based reason-for-outcome summaries (tone, intent, compliance from full transcript). Without it, the app uses rule-based reasons only.
+**Optional – LLM outcome summaries:** Set at least one of `GEMINI_API_KEY` or `OPENAI_API_KEY`. The app tries Gemini first, then OpenAI (e.g. when Gemini hits free-tier quota). Summaries are tone/compliance/intent from the full transcript; without either key, rule-based reasons are shown.
+
+- **Local:** Copy `.env.example` to `.env` and add your key(s). Or use Streamlit: copy `.streamlit/secrets.toml.example` to `.streamlit/secrets.toml` and fill in.
+- **Streamlit Cloud:** Add `GEMINI_API_KEY` and/or `OPENAI_API_KEY` in the app’s Secrets.
 
 ## Run pipeline (generate + audit)
 
@@ -28,7 +31,7 @@ streamlit run app.py
 ```
 
 - **Default view**: Only below-threshold or critical transcripts.
-- **Reason for outcome**: Each card shows an LLM-generated concise summary (tone, compliance, intent from full text) when `OPENAI_API_KEY` is set; otherwise the rule-based reason list.
+- **Reason for outcome**: Each card shows an LLM-generated concise summary (tone, compliance, intent from full text) when `GEMINI_API_KEY` or `OPENAI_API_KEY` is set; otherwise the rule-based reason list.
 - **Filters**: Persona (Collections / RAM), Language (EN / ES). Option to show all transcripts.
 - **Expand**: View full transcript and per-rule findings.
 

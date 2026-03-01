@@ -110,6 +110,19 @@ ram_positive_checks:
     weight: 15
     reason: "Summary of next steps provided"
 
+# Process rules (DPA): idle = no screen activity; dwell = time on one screen before switching
+process_rules:
+  high_idle_ratio:
+    weight: 20
+    severity: moderate
+    reason: "Idle time too high (time with no screen activity)"
+    threshold_idle_ratio: 0.25   # fail if idle_ratio > 0.25
+  high_dwell:
+    weight: 18
+    severity: moderate
+    reason: "Dwell time too high (stuck or very slow on one screen)"
+    threshold_max_dwell_sec: 300  # fail if max_dwell_sec > 300 (5 min)
+
 # Score threshold: transcripts with aggregate score >= threshold are "above threshold" (failing)
 # Dashboard shows: score >= threshold OR any critical finding (actionable items)
 score_threshold: 70   # 0-100 scale; score >= 70 = show on dashboard
