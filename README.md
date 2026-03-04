@@ -13,6 +13,7 @@ A prototype audit explorer for auto finance contact centers: synthetic call tran
 - **LLM outcome summaries** (optional) — Gemini first, OpenAI fallback; concise tone/compliance summary per transcript when API keys are set
 - **Compliance overrides** — Mark transcripts or findings as overridden with reason and expiry
 - **Streamlit dashboard** — Filter by persona/language, view actionable-only or all, expand transcript and findings, backfill DPA for existing data
+- **Audit ops** — Volume completed (previous day / today), daily assignments with bias-aware distribution across auditors, real-time completion tracking. Sidebar: **View → Audit ops**. Add auditors, generate daily assignments from actionable list, mark complete. *Revert: see Revert section below.*
 
 ---
 
@@ -54,6 +55,7 @@ streamlit run app.py
 - **Filters:** Persona (Collections / RAM), Language (EN / ES). Option to show all transcripts.
 - **Per card:** Reason for outcome, score, band, DPA metrics (idle %, dwell max), optional **Get LLM summary**.
 - **Backfill DPA:** If you have existing transcripts without DPA, use **Backfill DPA (synthetic) for existing transcripts** in the sidebar to add synthetic DPA and re-audit.
+- **Audit ops:** In the sidebar choose **View → Audit ops**. Add auditors (Manage auditors), then **Generate daily assignments** to distribute actionable transcripts with bias-aware spread. Volume completed (yesterday/today) and today’s assignments with **Complete** per item.
 
 ---
 
@@ -95,14 +97,15 @@ These feed into the same score and **reason for outcome** as transcript rules. W
 | `config/personas.yaml` | Personas (Collections, RAM) and failure modes |
 | `config/scenarios.yaml` | Scenarios and traits per persona |
 | `config/rules_weights.yaml` | Rule weights, severity, score threshold, **process_rules** (idle/dwell) |
-| `data/vigilantcx.db` | SQLite: transcripts, findings, audit runs, overrides, **dpa_events**, **dpa_metrics** |
+| `data/vigilantcx.db` | SQLite: transcripts, findings, audit runs, overrides, DPA, **auditors**, **assignments** |
 
 **Code layout**
 
-- `app.py` — Streamlit dashboard
-- `src/data/` — Models, store, schema (transcripts, findings, audit runs, overrides, DPA)
+- `app.py` — Streamlit dashboard (Results + Audit ops view)
+- `src/data/` — Models, store, schema (transcripts, findings, audit runs, overrides, DPA, auditors, assignments)
 - `src/synthetic/` — Template-based transcript generator (EN/ES)
 - `src/audit/` — Rule engine; `llm_audit.py` for optional LLM summaries
+- `src/audit_ops/` — Assignment engine (bias-aware distribution), volume queries
 - `src/dpa/` — Synthetic DPA events and idle/dwell metrics
 - `src/scoring/` — Weighted score, severity band, actionable filter
 - `src/overrides/` — Override apply logic
@@ -113,6 +116,13 @@ These feed into the same score and **reason for outcome** as transcript rules. W
 
 - **`run_pipeline(max_per_scenario=1, use_llm=False)`** — Generate transcripts, generate synthetic DPA, audit (transcript + process rules), score, persist. Set `use_llm=True` to request LLM summaries during run (uses API quota).
 - **`backfill_dpa(store)`** — For transcripts without DPA (or with invalid metrics), generate synthetic DPA, re-audit (including process rules), and update score. Call from dashboard via **Backfill DPA** or from code.
+
+---
+
+## Revert (remove a feature)
+
+- **Audit ops:** Remove `src/audit_ops/`; in `app.py` remove the `view` radio, the `if view == "Audit ops"` block and `_render_audit_ops`; in `src/data/store.py` remove audit_ops table creation in `__init__` and all audit_ops methods; in `src/data/models.py` remove `Auditor` and `Assignment`; in `src/data/schema.sql` remove the `auditors` and `assignments` tables and their indexes. Optionally run `DROP TABLE IF EXISTS assignments; DROP TABLE IF EXISTS auditors;` on the DB.
+- **DPA:** See earlier README or ask to revert DPA (synthetic idle/dwell and process rules).
 
 ---
 

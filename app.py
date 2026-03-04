@@ -60,19 +60,91 @@ def _get_llm_keys():
     return gemini_key or None, openai_key or None
 
 
+def _render_audit_ops(store):
+    """Audit ops: volume completed yesterday/today, daily assignments, bias-aware distribution."""
+    from datetime import date
+    from src.audit_ops.assigner import run_daily_assignment
+    from src.data.models import Auditor
+    from src.scoring.filter import filter_actionable
+    from src.config_loader import get_score_threshold
+
+    st.subheader("Audit ops")
+    st.caption("Volume completed and daily assignments (bias-aware distribution).")
+
+    # Volume metrics
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Volume completed (previous day)", store.volume_completed_yesterday())
+    with col2:
+        st.metric("Volume completed (today)", store.volume_completed_today())
+
+    today = date.today().isoformat()
+    auditors = store.list_auditors()
+
+    # Manage auditors (minimal)
+    with st.expander("Manage auditors"):
+        for a in auditors:
+            st.caption(f"**{a.name}** ({a.id})" + (f" — {a.role}" if a.role else ""))
+        aid = st.text_input("Auditor ID", key="ao_auditor_id", placeholder="e.g. aud_1")
+        aname = st.text_input("Name", key="ao_auditor_name", placeholder="e.g. Jane Doe")
+        if st.button("Add auditor", key="ao_add_auditor") and aid.strip() and aname.strip():
+            store.insert_auditor(Auditor(id=aid.strip(), name=aname.strip()))
+            st.rerun()
+
+    # Generate daily assignments
+    threshold = get_score_threshold()
+    all_ids = store.list_transcript_ids()
+    actionable_ids = filter_actionable(all_ids, store, score_threshold=threshold, exclude_overridden=True) if all_ids else []
+    if not auditors:
+        st.info("Add at least one auditor above, then generate assignments.")
+    else:
+        if st.button("Generate daily assignments", key="ao_generate"):
+            n = run_daily_assignment(store, actionable_ids, today)
+            st.success(f"Created {n} assignment(s) for today.")
+            st.rerun()
+
+    # Assignments for today
+    st.markdown("---")
+    st.markdown("**Today’s assignments**")
+    assignments = store.get_assignments_for_date(today)
+    if not assignments:
+        st.caption("No assignments for today. Use *Generate daily assignments* to distribute actionable transcripts.")
+        return
+    by_auditor = {}
+    for a in assignments:
+        by_auditor.setdefault(a.auditor_id, []).append(a)
+    for auditor_id, list_a in sorted(by_auditor.items()):
+        completed = sum(1 for a in list_a if a.status == "completed")
+        st.markdown(f"**{auditor_id}** — {completed}/{len(list_a)} completed")
+        for a in list_a:
+            c1, c2 = st.columns([3, 1])
+            with c1:
+                st.caption(a.transcript_id + (" ✓" if a.status == "completed" else ""))
+            with c2:
+                if a.status == "pending" and st.button("Complete", key=f"complete_{a.id}"):
+                    store.mark_assignment_completed(a.id)
+                    st.rerun()
+
+
 def main():
     st.set_page_config(page_title="VigilantCX Audit Explorer", layout="wide")
-    st.title("Risk-Based Audit Explorer")
-    st.caption("Below-threshold and critical results only. Reason for outcome shown per transcript.")
-
     store = get_store()
     threshold = get_score_threshold()
 
+    # Sidebar: view selector + filters
+    view = st.sidebar.radio("View", ["Results", "Audit ops"], index=0)
     show_all = st.sidebar.checkbox("Show all transcripts (including good/moderate)", value=False)
     persona_filter = st.sidebar.selectbox("Persona", ["All", "Collections", "RAM"], index=0)
     language_filter = st.sidebar.selectbox("Language", ["All", "EN", "ES"], index=0)
+    st.sidebar.caption("Reason for outcome is from rules (tone + compliance). Optional: **Get LLM summary** on a result for an AI summary. *(Free-tier API quotas can be very low.)*")
 
-    st.sidebar.caption("Reason for outcome is from rules (tone + compliance). Optional: **Get LLM summary** on a result for an AI summary. *(Free-tier API quotas can be very low; the rule-based reason is always available.)*")
+    if view == "Audit ops":
+        st.title("Risk-Based Audit Explorer")
+        _render_audit_ops(store)
+        return
+
+    st.title("Risk-Based Audit Explorer")
+    st.caption("Below-threshold and critical results only. Reason for outcome shown per transcript.")
 
     all_ids = store.list_transcript_ids()
     if not all_ids:

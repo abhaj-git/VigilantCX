@@ -60,6 +60,26 @@ CREATE TABLE IF NOT EXISTS dpa_metrics (
     FOREIGN KEY (transcript_id) REFERENCES transcripts(id)
 );
 
+-- Audit ops: auditors and daily assignments (revert: drop these tables and remove src/audit_ops + app Audit ops section)
+CREATE TABLE IF NOT EXISTS auditors (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    role TEXT
+);
+CREATE TABLE IF NOT EXISTS assignments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    transcript_id TEXT NOT NULL,
+    auditor_id TEXT NOT NULL,
+    assigned_date TEXT NOT NULL,
+    assigned_at TEXT,
+    completed_at TEXT,
+    status TEXT NOT NULL DEFAULT 'pending',
+    FOREIGN KEY (transcript_id) REFERENCES transcripts(id),
+    FOREIGN KEY (auditor_id) REFERENCES auditors(id)
+);
+
 CREATE INDEX IF NOT EXISTS idx_findings_transcript ON findings(transcript_id);
 CREATE INDEX IF NOT EXISTS idx_overrides_transcript ON overrides(transcript_id);
 CREATE INDEX IF NOT EXISTS idx_dpa_events_transcript ON dpa_events(transcript_id);
+CREATE INDEX IF NOT EXISTS idx_assignments_auditor_date ON assignments(auditor_id, assigned_date);
+CREATE INDEX IF NOT EXISTS idx_assignments_date ON assignments(assigned_date);

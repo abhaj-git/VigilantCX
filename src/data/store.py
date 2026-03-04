@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from .models import AuditRun, DPAEvent, DPAMetrics, Finding, Override, Transcript, TranscriptTurn
+from .models import Assignment, Auditor, AuditRun, DPAEvent, DPAMetrics, Finding, Override, Transcript, TranscriptTurn
 
 DB_PATH = Path(__file__).resolve().parent.parent.parent / "data" / "vigilantcx.db"
 
@@ -34,6 +34,8 @@ class Store:
         for stmt in (
             "CREATE TABLE IF NOT EXISTS dpa_events (transcript_id TEXT NOT NULL, timestamp_sec REAL NOT NULL, screen_id TEXT NOT NULL)",
             "CREATE TABLE IF NOT EXISTS dpa_metrics (transcript_id TEXT PRIMARY KEY, call_duration_sec REAL NOT NULL, idle_sec REAL NOT NULL, idle_ratio REAL NOT NULL, max_dwell_sec REAL NOT NULL, dwell_by_screen TEXT NOT NULL)",
+            "CREATE TABLE IF NOT EXISTS auditors (id TEXT PRIMARY KEY, name TEXT NOT NULL, role TEXT)",
+            "CREATE TABLE IF NOT EXISTS assignments (id INTEGER PRIMARY KEY AUTOINCREMENT, transcript_id TEXT NOT NULL, auditor_id TEXT NOT NULL, assigned_date TEXT NOT NULL, assigned_at TEXT, completed_at TEXT, status TEXT NOT NULL DEFAULT 'pending')",
         ):
             conn.execute(stmt)
         conn.commit()
@@ -297,5 +299,105 @@ class Store:
                 max_dwell_sec=row["max_dwell_sec"],
                 dwell_by_screen=json.loads(row["dwell_by_screen"]),
             )
+        finally:
+            conn.close()
+
+    # --- Audit ops ---
+    def list_auditors(self) -> list[Auditor]:
+        conn = self._conn()
+        conn.row_factory = _dict_factory
+        try:
+            rows = conn.execute("SELECT id, name, role FROM auditors ORDER BY name").fetchall()
+            return [Auditor(id=r["id"], name=r["name"], role=r.get("role")) for r in rows]
+        finally:
+            conn.close()
+
+    def insert_auditor(self, a: Auditor) -> None:
+        conn = self._conn()
+        try:
+            conn.execute("INSERT OR REPLACE INTO auditors (id, name, role) VALUES (?, ?, ?)", (a.id, a.name, a.role))
+            conn.commit()
+        finally:
+            conn.close()
+
+    def insert_assignments(self, assignments: list[Assignment]) -> None:
+        conn = self._conn()
+        try:
+            now = datetime.utcnow().isoformat() + "Z"
+            for a in assignments:
+                conn.execute(
+                    """INSERT INTO assignments (transcript_id, auditor_id, assigned_date, assigned_at, completed_at, status)
+                       VALUES (?, ?, ?, ?, ?, ?)""",
+                    (a.transcript_id, a.auditor_id, a.assigned_date, a.assigned_at or now, a.completed_at, a.status),
+                )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_assignments_for_date(self, assigned_date: str) -> list[Assignment]:
+        conn = self._conn()
+        conn.row_factory = _dict_factory
+        try:
+            rows = conn.execute(
+                "SELECT id, transcript_id, auditor_id, assigned_date, assigned_at, completed_at, status FROM assignments WHERE assigned_date = ? ORDER BY auditor_id, transcript_id",
+                (assigned_date,),
+            ).fetchall()
+            return [
+                Assignment(id=r["id"], transcript_id=r["transcript_id"], auditor_id=r["auditor_id"], assigned_date=r["assigned_date"], assigned_at=r["assigned_at"], completed_at=r["completed_at"], status=r["status"])
+                for r in rows
+            ]
+        finally:
+            conn.close()
+
+    def get_assignments_by_auditor(self, auditor_id: str, assigned_date: str) -> list[Assignment]:
+        conn = self._conn()
+        conn.row_factory = _dict_factory
+        try:
+            rows = conn.execute(
+                "SELECT id, transcript_id, auditor_id, assigned_date, assigned_at, completed_at, status FROM assignments WHERE auditor_id = ? AND assigned_date = ? ORDER BY status, transcript_id",
+                (auditor_id, assigned_date),
+            ).fetchall()
+            return [
+                Assignment(id=r["id"], transcript_id=r["transcript_id"], auditor_id=r["auditor_id"], assigned_date=r["assigned_date"], assigned_at=r["assigned_at"], completed_at=r["completed_at"], status=r["status"])
+                for r in rows
+            ]
+        finally:
+            conn.close()
+
+    def get_transcript_ids_assigned_on_date(self, assigned_date: str) -> set[str]:
+        conn = self._conn()
+        try:
+            rows = conn.execute("SELECT transcript_id FROM assignments WHERE assigned_date = ?", (assigned_date,)).fetchall()
+            return {r[0] for r in rows}
+        finally:
+            conn.close()
+
+    def volume_completed_yesterday(self) -> int:
+        conn = self._conn()
+        try:
+            row = conn.execute(
+                "SELECT COUNT(*) AS n FROM assignments WHERE status = 'completed' AND date(completed_at) = date('now', '-1 day')"
+            ).fetchone()
+            return row[0] if row else 0
+        finally:
+            conn.close()
+
+    def volume_completed_today(self) -> int:
+        conn = self._conn()
+        try:
+            row = conn.execute(
+                "SELECT COUNT(*) AS n FROM assignments WHERE status = 'completed' AND date(completed_at) = date('now')"
+            ).fetchone()
+            return row[0] if row else 0
+        finally:
+            conn.close()
+
+    def mark_assignment_completed(self, assignment_id: int) -> None:
+        from datetime import datetime
+        conn = self._conn()
+        try:
+            now = datetime.utcnow().isoformat() + "Z"
+            conn.execute("UPDATE assignments SET completed_at = ?, status = 'completed' WHERE id = ?", (now, assignment_id))
+            conn.commit()
         finally:
             conn.close()

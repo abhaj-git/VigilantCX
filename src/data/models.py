@@ -79,3 +79,22 @@ class DPAMetrics:
     idle_ratio: float  # idle_sec / call_duration_sec (0–1)
     max_dwell_sec: float  # longest time on any single screen
     dwell_by_screen: dict  # screen_id -> seconds on that screen
+
+
+# Audit ops: who audits what (revert: remove audit_ops module and UI)
+@dataclass
+class Auditor:
+    id: str
+    name: str
+    role: Optional[str] = None
+
+
+@dataclass
+class Assignment:
+    id: Optional[int]
+    transcript_id: str
+    auditor_id: str
+    assigned_date: str
+    assigned_at: Optional[str]
+    completed_at: Optional[str]
+    status: str  # pending | completed
