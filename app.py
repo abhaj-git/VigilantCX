@@ -103,9 +103,9 @@ def _render_audit_ops(store):
             st.success(f"Created {n} assignment(s) for today.")
             st.rerun()
 
-    # Assignments for today
+    # Assignments for today: each row expandable to show same data as Results (review then mark complete)
     st.markdown("---")
-    st.markdown("**Today’s assignments**")
+    st.markdown("**Today’s assignments** — Expand to review (reason, transcript, findings), then mark complete.")
     assignments = store.get_assignments_for_date(today)
     if not assignments:
         st.caption("No assignments for today. Use *Generate daily assignments* to distribute actionable transcripts.")
@@ -117,13 +117,37 @@ def _render_audit_ops(store):
         completed = sum(1 for a in list_a if a.status == "completed")
         st.markdown(f"**{auditor_id}** — {completed}/{len(list_a)} completed")
         for a in list_a:
-            c1, c2 = st.columns([3, 1])
-            with c1:
-                st.caption(a.transcript_id + (" ✓" if a.status == "completed" else ""))
-            with c2:
-                if a.status == "pending" and st.button("Complete", key=f"complete_{a.id}"):
-                    store.mark_assignment_completed(a.id)
-                    st.rerun()
+            t = store.get_transcript(a.transcript_id)
+            run = store.get_latest_audit_run(a.transcript_id)
+            findings = store.get_findings(a.transcript_id) if t else []
+            reason = (run.outcome_summary or _reason_for_outcome(findings, run.severity_band)) if run else "—"
+            dpa_metrics = store.get_dpa_metrics(a.transcript_id) if t else None
+            label = f"{a.transcript_id}" + (" ✓" if a.status == "completed" else " — Review & complete")
+            with st.expander(label):
+                if not t or not run:
+                    st.caption("Transcript or audit run missing.")
+                else:
+                    st.markdown(f"**Reason for outcome:** {reason}")
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.metric("Score", f"{run.score:.1f}")
+                        st.caption(f"Band: {run.severity_band}" + (" (critical)" if run.has_critical else ""))
+                    with col2:
+                        st.caption(f"Persona: {t.persona_id} | Lang: {t.language.upper()}")
+                        if dpa_metrics:
+                            st.caption(f"Idle: {int(dpa_metrics.idle_ratio*100)}% | Dwell max: {dpa_metrics.max_dwell_sec/60:.1f}m")
+                    st.markdown("**Transcript**")
+                    for turn in t.turns:
+                        seg = f" [{turn.segment}]" if turn.segment else ""
+                        st.text(f"{turn.speaker}{seg}: {turn.text}")
+                    st.markdown("**Findings**")
+                    for f in findings:
+                        status = "✅" if f.passed else "❌"
+                        st.caption(f"{status} {f.rule_id}: {f.reason} ({f.severity})")
+                if a.status == "pending":
+                    if st.button("Mark complete", key=f"complete_{a.id}"):
+                        store.mark_assignment_completed(a.id)
+                        st.rerun()
 
 
 def main():
