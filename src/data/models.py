@@ -98,3 +98,5 @@ class Assignment:
     assigned_at: Optional[str]
     completed_at: Optional[str]
     status: str  # pending | completed
+    auditor_notes: Optional[str] = None
+    line_item_instructions: Optional[dict] = None  # rule_id -> instruction text per finding

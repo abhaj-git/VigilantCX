@@ -74,6 +74,8 @@ CREATE TABLE IF NOT EXISTS assignments (
     assigned_at TEXT,
     completed_at TEXT,
     status TEXT NOT NULL DEFAULT 'pending',
+    auditor_notes TEXT,
+    line_item_instructions TEXT,
     FOREIGN KEY (transcript_id) REFERENCES transcripts(id),
     FOREIGN KEY (auditor_id) REFERENCES auditors(id)
 );

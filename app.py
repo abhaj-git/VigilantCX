@@ -71,6 +71,12 @@ def _render_audit_ops(store):
     st.subheader("Audit ops")
     st.caption("Volume completed and daily assignments (bias-aware distribution).")
 
+    # Ensure one default auditor for demo
+    auditors = store.list_auditors()
+    if not auditors:
+        store.insert_auditor(Auditor(id="demo_auditor", name="Demo Auditor"))
+        auditors = store.list_auditors()
+
     # Volume metrics
     col1, col2 = st.columns(2)
     with col1:
@@ -79,29 +85,15 @@ def _render_audit_ops(store):
         st.metric("Volume completed (today)", store.volume_completed_today())
 
     today = date.today().isoformat()
-    auditors = store.list_auditors()
-
-    # Manage auditors (minimal)
-    with st.expander("Manage auditors"):
-        for a in auditors:
-            st.caption(f"**{a.name}** ({a.id})" + (f" — {a.role}" if a.role else ""))
-        aid = st.text_input("Auditor ID", key="ao_auditor_id", placeholder="e.g. aud_1")
-        aname = st.text_input("Name", key="ao_auditor_name", placeholder="e.g. Jane Doe")
-        if st.button("Add auditor", key="ao_add_auditor") and aid.strip() and aname.strip():
-            store.insert_auditor(Auditor(id=aid.strip(), name=aname.strip()))
-            st.rerun()
 
     # Generate daily assignments
     threshold = get_score_threshold()
     all_ids = store.list_transcript_ids()
     actionable_ids = filter_actionable(all_ids, store, score_threshold=threshold, exclude_overridden=True) if all_ids else []
-    if not auditors:
-        st.info("Add at least one auditor above, then generate assignments.")
-    else:
-        if st.button("Generate daily assignments", key="ao_generate"):
-            n = run_daily_assignment(store, actionable_ids, today)
-            st.success(f"Created {n} assignment(s) for today.")
-            st.rerun()
+    if st.button("Generate daily assignments", key="ao_generate"):
+        n = run_daily_assignment(store, actionable_ids, today)
+        st.success(f"Created {n} assignment(s) for today.")
+        st.rerun()
 
     # Assignments for today: each row expandable to show same data as Results (review then mark complete)
     st.markdown("---")
@@ -140,14 +132,29 @@ def _render_audit_ops(store):
                     for turn in t.turns:
                         seg = f" [{turn.segment}]" if turn.segment else ""
                         st.text(f"{turn.speaker}{seg}: {turn.text}")
-                    st.markdown("**Findings**")
+                    st.markdown("**Findings** (add instruction per line item, then Save audit, then Mark complete)")
+                    instructions = a.line_item_instructions or {}
                     for f in findings:
                         status = "✅" if f.passed else "❌"
                         st.caption(f"{status} {f.rule_id}: {f.reason} ({f.severity})")
+                        inst = st.text_input("Instruction", key=f"inst_{a.id}_{f.rule_id}", value=instructions.get(f.rule_id, ""), placeholder="e.g. Coach agent to state Mini-Miranda", label_visibility="collapsed")
                 if a.status == "pending":
-                    if st.button("Mark complete", key=f"complete_{a.id}"):
-                        store.mark_assignment_completed(a.id)
+                    inst_dict = {f.rule_id: st.session_state.get(f"inst_{a.id}_{f.rule_id}", "") for f in findings}
+                    if st.button("Save audit", key=f"save_{a.id}"):
+                        store.update_assignment_line_item_instructions(a.id, inst_dict)
                         st.rerun()
+                    notes = st.text_area("Notes (optional)", key=f"notes_{a.id}", placeholder="e.g. Agree with outcome. Or: Dispute – tone acceptable in context.")
+                    if st.button("Mark complete", key=f"complete_{a.id}"):
+                        store.update_assignment_line_item_instructions(a.id, inst_dict)
+                        store.mark_assignment_completed(a.id, auditor_notes=notes)
+                        st.rerun()
+                else:
+                    if a.line_item_instructions:
+                        for rule_id, inst in a.line_item_instructions.items():
+                            if (inst or "").strip():
+                                st.caption(f"**{rule_id}:** {inst}")
+                    if a.auditor_notes:
+                        st.caption(f"**Auditor notes:** {a.auditor_notes}")
 
 
 def main():

@@ -31,11 +31,21 @@ class Store:
             conn.commit()
         except sqlite3.OperationalError:
             pass
+        try:
+            conn.execute("ALTER TABLE assignments ADD COLUMN auditor_notes TEXT")
+            conn.commit()
+        except sqlite3.OperationalError:
+            pass
+        try:
+            conn.execute("ALTER TABLE assignments ADD COLUMN line_item_instructions TEXT")
+            conn.commit()
+        except sqlite3.OperationalError:
+            pass
         for stmt in (
             "CREATE TABLE IF NOT EXISTS dpa_events (transcript_id TEXT NOT NULL, timestamp_sec REAL NOT NULL, screen_id TEXT NOT NULL)",
             "CREATE TABLE IF NOT EXISTS dpa_metrics (transcript_id TEXT PRIMARY KEY, call_duration_sec REAL NOT NULL, idle_sec REAL NOT NULL, idle_ratio REAL NOT NULL, max_dwell_sec REAL NOT NULL, dwell_by_screen TEXT NOT NULL)",
             "CREATE TABLE IF NOT EXISTS auditors (id TEXT PRIMARY KEY, name TEXT NOT NULL, role TEXT)",
-            "CREATE TABLE IF NOT EXISTS assignments (id INTEGER PRIMARY KEY AUTOINCREMENT, transcript_id TEXT NOT NULL, auditor_id TEXT NOT NULL, assigned_date TEXT NOT NULL, assigned_at TEXT, completed_at TEXT, status TEXT NOT NULL DEFAULT 'pending')",
+            "CREATE TABLE IF NOT EXISTS assignments (id INTEGER PRIMARY KEY AUTOINCREMENT, transcript_id TEXT NOT NULL, auditor_id TEXT NOT NULL, assigned_date TEXT NOT NULL, assigned_at TEXT, completed_at TEXT, status TEXT NOT NULL DEFAULT 'pending', auditor_notes TEXT, line_item_instructions TEXT)",
         ):
             conn.execute(stmt)
         conn.commit()
@@ -326,9 +336,9 @@ class Store:
             now = datetime.utcnow().isoformat() + "Z"
             for a in assignments:
                 conn.execute(
-                    """INSERT INTO assignments (transcript_id, auditor_id, assigned_date, assigned_at, completed_at, status)
-                       VALUES (?, ?, ?, ?, ?, ?)""",
-                    (a.transcript_id, a.auditor_id, a.assigned_date, a.assigned_at or now, a.completed_at, a.status),
+                    """INSERT INTO assignments (transcript_id, auditor_id, assigned_date, assigned_at, completed_at, status, auditor_notes, line_item_instructions)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                    (a.transcript_id, a.auditor_id, a.assigned_date, a.assigned_at or now, a.completed_at, a.status, getattr(a, "auditor_notes", None), json.dumps(getattr(a, "line_item_instructions", None)) if getattr(a, "line_item_instructions", None) else None),
                 )
             conn.commit()
         finally:
@@ -339,11 +349,11 @@ class Store:
         conn.row_factory = _dict_factory
         try:
             rows = conn.execute(
-                "SELECT id, transcript_id, auditor_id, assigned_date, assigned_at, completed_at, status FROM assignments WHERE assigned_date = ? ORDER BY auditor_id, transcript_id",
+                "SELECT id, transcript_id, auditor_id, assigned_date, assigned_at, completed_at, status, auditor_notes, line_item_instructions FROM assignments WHERE assigned_date = ? ORDER BY auditor_id, transcript_id",
                 (assigned_date,),
             ).fetchall()
             return [
-                Assignment(id=r["id"], transcript_id=r["transcript_id"], auditor_id=r["auditor_id"], assigned_date=r["assigned_date"], assigned_at=r["assigned_at"], completed_at=r["completed_at"], status=r["status"])
+                Assignment(id=r["id"], transcript_id=r["transcript_id"], auditor_id=r["auditor_id"], assigned_date=r["assigned_date"], assigned_at=r["assigned_at"], completed_at=r["completed_at"], status=r["status"], auditor_notes=r.get("auditor_notes"), line_item_instructions=json.loads(r["line_item_instructions"]) if (r.get("line_item_instructions") and (r["line_item_instructions"] or "").strip()) else None)
                 for r in rows
             ]
         finally:
@@ -354,11 +364,11 @@ class Store:
         conn.row_factory = _dict_factory
         try:
             rows = conn.execute(
-                "SELECT id, transcript_id, auditor_id, assigned_date, assigned_at, completed_at, status FROM assignments WHERE auditor_id = ? AND assigned_date = ? ORDER BY status, transcript_id",
+                "SELECT id, transcript_id, auditor_id, assigned_date, assigned_at, completed_at, status, auditor_notes, line_item_instructions FROM assignments WHERE auditor_id = ? AND assigned_date = ? ORDER BY status, transcript_id",
                 (auditor_id, assigned_date),
             ).fetchall()
             return [
-                Assignment(id=r["id"], transcript_id=r["transcript_id"], auditor_id=r["auditor_id"], assigned_date=r["assigned_date"], assigned_at=r["assigned_at"], completed_at=r["completed_at"], status=r["status"])
+                Assignment(id=r["id"], transcript_id=r["transcript_id"], auditor_id=r["auditor_id"], assigned_date=r["assigned_date"], assigned_at=r["assigned_at"], completed_at=r["completed_at"], status=r["status"], auditor_notes=r.get("auditor_notes"), line_item_instructions=json.loads(r["line_item_instructions"]) if (r.get("line_item_instructions") and (r["line_item_instructions"] or "").strip()) else None)
                 for r in rows
             ]
         finally:
@@ -392,12 +402,22 @@ class Store:
         finally:
             conn.close()
 
-    def mark_assignment_completed(self, assignment_id: int) -> None:
-        from datetime import datetime
+    def update_assignment_line_item_instructions(self, assignment_id: int, instructions: dict) -> None:
+        conn = self._conn()
+        try:
+            conn.execute("UPDATE assignments SET line_item_instructions = ? WHERE id = ?", (json.dumps(instructions) if instructions else None, assignment_id))
+            conn.commit()
+        finally:
+            conn.close()
+
+    def mark_assignment_completed(self, assignment_id: int, auditor_notes: Optional[str] = None) -> None:
         conn = self._conn()
         try:
             now = datetime.utcnow().isoformat() + "Z"
-            conn.execute("UPDATE assignments SET completed_at = ?, status = 'completed' WHERE id = ?", (now, assignment_id))
+            conn.execute(
+                "UPDATE assignments SET completed_at = ?, status = 'completed', auditor_notes = COALESCE(?, auditor_notes) WHERE id = ?",
+                (now, (auditor_notes or "").strip() or None, assignment_id),
+            )
             conn.commit()
         finally:
             conn.close()
