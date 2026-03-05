@@ -132,29 +132,18 @@ def _render_audit_ops(store):
                     for turn in t.turns:
                         seg = f" [{turn.segment}]" if turn.segment else ""
                         st.text(f"{turn.speaker}{seg}: {turn.text}")
-                    st.markdown("**Findings** (add instruction per line item, then Save audit, then Mark complete)")
-                    instructions = a.line_item_instructions or {}
+                    st.markdown("**Findings**")
                     for f in findings:
                         status = "✅" if f.passed else "❌"
                         st.caption(f"{status} {f.rule_id}: {f.reason} ({f.severity})")
-                        inst = st.text_input("Instruction", key=f"inst_{a.id}_{f.rule_id}", value=instructions.get(f.rule_id, ""), placeholder="e.g. Coach agent to state Mini-Miranda", label_visibility="collapsed")
                 if a.status == "pending":
-                    inst_dict = {f.rule_id: st.session_state.get(f"inst_{a.id}_{f.rule_id}", "") for f in findings}
-                    if st.button("Save audit", key=f"save_{a.id}"):
-                        store.update_assignment_line_item_instructions(a.id, inst_dict)
-                        st.rerun()
-                    notes = st.text_area("Notes (optional)", key=f"notes_{a.id}", placeholder="e.g. Agree with outcome. Or: Dispute – tone acceptable in context.")
+                    instructions = st.text_area("Instructions", key=f"notes_{a.id}", placeholder="e.g. Agree with outcome. Coach agent to state Mini-Miranda next time.")
                     if st.button("Mark complete", key=f"complete_{a.id}"):
-                        store.update_assignment_line_item_instructions(a.id, inst_dict)
-                        store.mark_assignment_completed(a.id, auditor_notes=notes)
+                        store.mark_assignment_completed(a.id, auditor_notes=instructions)
                         st.rerun()
                 else:
-                    if a.line_item_instructions:
-                        for rule_id, inst in a.line_item_instructions.items():
-                            if (inst or "").strip():
-                                st.caption(f"**{rule_id}:** {inst}")
                     if a.auditor_notes:
-                        st.caption(f"**Auditor notes:** {a.auditor_notes}")
+                        st.caption(f"**Instructions:** {a.auditor_notes}")
 
 
 def main():
