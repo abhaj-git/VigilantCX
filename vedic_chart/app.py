@@ -28,10 +28,10 @@ from vedic_chart.ephemeris import ayanamsa_choices, compute_chart
 from vedic_chart.interpret import (
     chart_assessment_markdown,
     chart_summary_markdown,
-    compare_d1_dn,
     layer_comparison_narrative,
     nakshatra_picture_markdown,
 )
+from vedic_chart.varga_narratives import varga_detail_block, varga_detail_intro
 
 st.set_page_config(
     page_title="Vedic chart workbench",
@@ -247,10 +247,7 @@ if run:
         f"**Resolved:** {place_query} → {lat:.4f}°, {lon:.4f}° · **{tzname}** · **{ayan_label}** · "
         f"Local **{local_dt:%Y-%m-%d %I:%M %p}** · UTC **{utc_dt:%Y-%m-%d %H:%M}**"
     )
-    st.caption(
-        "D9 = navamsa (inner / partnership tone). D10 = dasamsa (work & how you’re seen). "
-        "Each row below says only what’s different for that graha — no repeated boilerplate."
-    )
+    st.caption("Below: detailed **D1→D9** and **D1→D10** lines for each point (like a short note per graha).")
 
     with st.expander("Technical — sidereal longitude & D1/D9 (for cross-check)"):
         st.caption("Compare these longitudes and signs with your reference app using the **same ayanamsa** and **exact birth local time**.")
@@ -262,20 +259,22 @@ if run:
                     f"nakshatra **{b.nakshatra}** pada **{b.pada}**"
                 )
 
-    st.subheader("D1 vs D9 — per point")
-    for b in bodies:
-        line, blurb = compare_d1_dn(b, 9)
-        st.markdown(f"- {line}")
-        st.caption(blurb)
+    st.subheader("D1 → D9 (navamsa)")
+    st.markdown(varga_detail_intro(9))
+    for i, b in enumerate(bodies):
+        st.markdown(varga_detail_block(b, 9))
+        if i < len(bodies) - 1:
+            st.divider()
 
     st.subheader("D9 — who lines up")
     st.markdown(layer_comparison_narrative(bodies, 9))
 
-    st.subheader("D1 vs D10 — per point")
-    for b in bodies:
-        line, blurb = compare_d1_dn(b, 10)
-        st.markdown(f"- {line}")
-        st.caption(blurb)
+    st.subheader("D1 → D10 (dasamsa)")
+    st.markdown(varga_detail_intro(10))
+    for i, b in enumerate(bodies):
+        st.markdown(varga_detail_block(b, 10))
+        if i < len(bodies) - 1:
+            st.divider()
 
     st.subheader("D10 — who lines up")
     st.markdown(layer_comparison_narrative(bodies, 10))
