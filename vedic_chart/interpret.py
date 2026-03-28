@@ -65,6 +65,112 @@ def compare_d1_dn(body: BodyPos, n: int) -> tuple[str, str]:
     return line, _blurb(rel, n)
 
 
+def _count_relations(bodies: list, n: int) -> dict[str, int]:
+    from collections import Counter
+
+    c: Counter[str] = Counter()
+    for b in bodies:
+        c[_relation(b.sign_d1, b.vargas[n])] += 1
+    return dict(c)
+
+
+def chart_summary_markdown(bodies: list) -> str:
+    """High-level counts after D1 vs D9 and D1 vs D10 comparisons."""
+    c9 = _count_relations(bodies, 9)
+    c10 = _count_relations(bodies, 10)
+    keys = ["same", "trine", "opposition", "tension_6_8", "square", "neutral"]
+    labels = {
+        "same": "same-sign",
+        "trine": "trine",
+        "opposition": "opposition",
+        "tension_6_8": "6/8-style",
+        "square": "square",
+        "neutral": "other / mixed",
+    }
+
+    def fmt(c: dict) -> str:
+        parts = []
+        for k in keys:
+            if c.get(k, 0):
+                parts.append(f"**{labels[k]}**: {c[k]}")
+        return ", ".join(parts) if parts else "—"
+
+    return (
+        "**D9 layer (vs D1):** " + fmt(c9) + "\n\n"
+        "**D10 layer (vs D1):** " + fmt(c10)
+    )
+
+
+def chart_assessment_markdown(bodies: list) -> str:
+    """Single assessment block (educational synthesis, not a full reading)."""
+    moon = next((b for b in bodies if b.name == "Moon"), None)
+    lagna = next((b for b in bodies if b.name == "Lagna"), None)
+    sun = next((b for b in bodies if b.name == "Sun"), None)
+
+    c9 = _count_relations(bodies, 9)
+    c10 = _count_relations(bodies, 10)
+    n = len(bodies)
+    same9 = c9.get("same", 0)
+    same10 = c10.get("same", 0)
+    tense9 = c9.get("tension_6_8", 0) + c9.get("square", 0)
+    tense10 = c10.get("tension_6_8", 0) + c10.get("square", 0)
+
+    lines = []
+    lines.append(
+        "**How to read this:** The lines above compare your *rashi* placements (D1) with "
+        "*navamsa* (D9, inner refinement) and *dasamsa* (D10, work and visibility). "
+        "Same-sign pairs usually feel consistent; 6/8 or square pairs ask for integration."
+    )
+
+    if lagna and moon:
+        lines.append(
+            f"**Luminaries & rising:** Lagna falls in **{lagna.nakshatra}** pada **{lagna.pada}**; "
+            f"Moon in **{moon.nakshatra}** pada **{moon.pada}** — mood, memory, and the emotional "
+            "tone of the chart often carry these nakshatra themes."
+        )
+    if sun:
+        lines.append(
+            f"**Sun** in **{sun.nakshatra}** pada **{sun.pada}** colours purpose, vitality, and father-figure themes in broad strokes."
+        )
+
+    if same9 >= n * 0.4:
+        lines.append(
+            "**D9 pattern:** Several D1/D9 same-sign echoes — inner life and outer expression may line up "
+            "in a straightforward way; still judge dignity and house lords in a full chart."
+        )
+    elif tense9 >= n * 0.35:
+        lines.append(
+            "**D9 pattern:** Several 6/8 or square-type D1/D9 pairs — inner refinement and outer life "
+            "may pull in different directions until reconciled through practice and clarity."
+        )
+    else:
+        lines.append(
+            "**D9 pattern:** Mixed agreements between D1 and D9 — neither all-smooth nor all-friction; "
+            "specific grahas above need individual weighting."
+        )
+
+    if same10 >= n * 0.4:
+        lines.append(
+            "**D10 pattern:** Strong overlap between D1 and D10 signs for many points — career and public "
+            "role may mirror the rashi story closely."
+        )
+    elif tense10 >= n * 0.35:
+        lines.append(
+            "**D10 pattern:** Notable D1/D10 stress signatures — how you work and how you are seen can "
+            "take extra calibration over time."
+        )
+    else:
+        lines.append(
+            "**D10 pattern:** Moderate mix — use the per-point lines to see which grahas anchor work "
+            "visibility vs which ask for adjustment."
+        )
+
+    lines.append(
+        "*This block is a template-style synthesis for study. It is not a substitute for a full Jyotish reading.*"
+    )
+    return "\n\n".join(lines)
+
+
 def nakshatra_blurb(name: str, nak: str, pada: int) -> str:
     """Very short traditional keyword flavor (educational templates, not prediction)."""
     hints = {

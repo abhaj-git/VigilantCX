@@ -1,5 +1,5 @@
 """
-Streamlit UI: birth data → D1–D10 signs, D1 vs D9 / D1 vs D10 summaries, nakshatra/pada.
+Streamlit UI: birth data → D1 vs D9 / D1 vs D10, then summary + assessment.
 Run from repo root:  streamlit run vedic_chart/app.py
 """
 from __future__ import annotations
@@ -19,7 +19,7 @@ from geopy.geocoders import Nominatim
 from timezonefinder import TimezoneFinder
 
 from vedic_chart.ephemeris import compute_chart
-from vedic_chart.interpret import compare_d1_dn, nakshatra_blurb
+from vedic_chart.interpret import compare_d1_dn, chart_assessment_markdown, chart_summary_markdown
 
 st.set_page_config(
     page_title="Vedic chart workbench",
@@ -34,12 +34,21 @@ st.caption(
 )
 
 
+def _to_24h(hour_12: int, minute: int, am_pm: str) -> tuple[int, int]:
+    # hour_12: 1–12
+    if am_pm == "AM":
+        h24 = 0 if hour_12 == 12 else hour_12
+    else:
+        h24 = 12 if hour_12 == 12 else hour_12 + 12
+    return h24, minute
+
+
 @st.cache_data(ttl=86400)
 def resolve_place(place: str) -> tuple[float, float, str]:
     geo = Nominatim(user_agent="vedic_chart_workbench/1.0 (local)")
     loc = geo.geocode(place, timeout=15)
     if not loc:
-        raise ValueError("Could not geocode that place. Try city, region, country.")
+        raise ValueError("Could not geocode that place. Try city, state, country spelled out.")
     lat, lon = float(loc.latitude), float(loc.longitude)
     tzname = TimezoneFinder().timezone_at(lng=lon, lat=lat)
     if not tzname:
@@ -49,9 +58,19 @@ def resolve_place(place: str) -> tuple[float, float, str]:
 
 with st.sidebar:
     st.header("Birth data")
-    place = st.text_input("Place of birth", placeholder="e.g. Mumbai, India")
+    city = st.text_input("City / town", placeholder="e.g. Mumbai")
+    state = st.text_input("State / region", placeholder="e.g. Maharashtra")
+    country = st.text_input("Country", placeholder="e.g. India")
     birth_date = st.date_input("Date of birth")
-    birth_time = st.time_input("Time of birth (local to place)")
+    st.markdown("**Time of birth (local)**")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        hour_12 = st.selectbox("Hour", options=list(range(1, 13)), index=11, format_func=lambda h: f"{h:02d}")
+    with c2:
+        minute = st.selectbox("Minute", options=list(range(0, 60)), format_func=lambda m: f"{m:02d}")
+    with c3:
+        am_pm = st.selectbox("AM / PM", options=["AM", "PM"], index=0)
+
     manual_tz = st.text_input(
         "Override timezone (IANA, optional)",
         placeholder="e.g. Asia/Kolkata",
@@ -60,12 +79,18 @@ with st.sidebar:
     run = st.button("Calculate", type="primary")
 
 if run:
-    if not place.strip():
-        st.error("Enter a birth place.")
+    if not city.strip() or not country.strip():
+        st.error("Enter at least **city** and **country**.")
         st.stop()
+    parts = [city.strip()]
+    if state.strip():
+        parts.append(state.strip())
+    parts.append(country.strip())
+    place_query = ", ".join(parts)
+
     try:
         if manual_tz.strip():
-            lat, lon, tzname = resolve_place(place.strip())
+            lat, lon, tzname = resolve_place(place_query)
             tzname = manual_tz.strip()
             try:
                 ZoneInfo(tzname)
@@ -73,17 +98,18 @@ if run:
                 st.error("Invalid IANA timezone string.")
                 st.stop()
         else:
-            lat, lon, tzname = resolve_place(place.strip())
+            lat, lon, tzname = resolve_place(place_query)
     except Exception as e:
         st.error(str(e))
         st.stop()
 
+    h24, mi = _to_24h(hour_12, minute, am_pm)
     local_dt = datetime(
         birth_date.year,
         birth_date.month,
         birth_date.day,
-        birth_time.hour,
-        birth_time.minute,
+        h24,
+        mi,
         tzinfo=ZoneInfo(tzname),
     )
     utc_dt = local_dt.astimezone(ZoneInfo("UTC"))
@@ -94,7 +120,10 @@ if run:
         st.error(f"Ephemeris error: {e}")
         st.stop()
 
-    st.success(f"Resolved **{place.strip()}** → {lat:.4f}°, {lon:.4f}° · **{tzname}** · UTC **{utc_dt:%Y-%m-%d %H:%M}**")
+    st.success(
+        f"**Resolved:** {place_query} → {lat:.4f}°, {lon:.4f}° · **{tzname}** · "
+        f"Local **{local_dt:%Y-%m-%d %I:%M %p}** · UTC **{utc_dt:%Y-%m-%d %H:%M}**"
+    )
 
     st.subheader("D1 vs D9 — per point")
     for b in bodies:
@@ -108,32 +137,11 @@ if run:
         st.markdown(f"- {line}")
         st.caption(blurb)
 
-    st.subheader("Planets, Lagna — signs D1–D10 · nakshatra · pada")
-    rows = []
-    for b in bodies:
-        rows.append(
-            {
-                "Point": b.name,
-                "D1": b.sign_d1,
-                "D2": b.vargas[2],
-                "D3": b.vargas[3],
-                "D4": b.vargas[4],
-                "D5": b.vargas[5],
-                "D6": b.vargas[6],
-                "D7": b.vargas[7],
-                "D8": b.vargas[8],
-                "D9": b.vargas[9],
-                "D10": b.vargas[10],
-                "Nakshatra": b.nakshatra,
-                "Pada": b.pada,
-                "Lon°": round(b.lon, 4),
-            }
-        )
-    st.dataframe(rows, use_container_width=True, hide_index=True)
+    st.subheader("Summary")
+    st.markdown(chart_summary_markdown(bodies))
 
-    st.subheader("Nakshatra / pada — short notes")
-    for b in bodies:
-        st.markdown(nakshatra_blurb(b.name, b.nakshatra, b.pada))
+    st.subheader("Assessment")
+    st.markdown(chart_assessment_markdown(bodies))
 
 else:
-    st.info("Enter birth place, date, and local time, then click **Calculate**.")
+    st.info("Enter birth location, date, and time (AM/PM), then click **Calculate**.")
