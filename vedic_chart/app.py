@@ -144,6 +144,10 @@ if run:
         f"**Resolved:** {place_query} → {lat:.4f}°, {lon:.4f}° · **{tzname}** · **{ayan_label}** · "
         f"Local **{local_dt:%Y-%m-%d %I:%M %p}** · UTC **{utc_dt:%Y-%m-%d %H:%M}**"
     )
+    st.caption(
+        "D9 = navamsa (inner / partnership tone). D10 = dasamsa (work & how you’re seen). "
+        "Each row below says only what’s different for that graha — no repeated boilerplate."
+    )
 
     with st.expander("Technical — sidereal longitude & D1/D9 (for cross-check)"):
         st.caption("Compare these longitudes and signs with your reference app using the **same ayanamsa** and **exact birth local time**.")
@@ -161,7 +165,7 @@ if run:
         st.markdown(f"- {line}")
         st.caption(blurb)
 
-    st.subheader("D9 — how the pattern reads together")
+    st.subheader("D9 — who lines up")
     st.markdown(layer_comparison_narrative(bodies, 9))
 
     st.subheader("D1 vs D10 — per point")
@@ -170,7 +174,7 @@ if run:
         st.markdown(f"- {line}")
         st.caption(blurb)
 
-    st.subheader("D10 — how the pattern reads together")
+    st.subheader("D10 — who lines up")
     st.markdown(layer_comparison_narrative(bodies, 10))
 
     st.subheader("Nakshatra summaries")

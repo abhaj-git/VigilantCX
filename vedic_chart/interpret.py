@@ -25,78 +25,37 @@ def _relation(s1: str, s2: str) -> str:
     return "neutral"
 
 
-_GRAHA_D9_ROLE = {
-    "Lagna": "the body, temperament, and how life *approaches* you",
-    "Sun": "core identity, father-figures, vitality, and dharma-direction",
-    "Moon": "mind, mother-nourishment, emotional habit, and what feels like “home”",
-    "Mars": "courage, siblings, conflict style, and where you push",
-    "Mercury": "speech, learning, commerce, and clever adaptation",
-    "Jupiter": "guidance, children, faith, and what expands you",
-    "Venus": "relationships, arts, comfort, and what you draw toward you",
-    "Saturn": "duty, time-tests, structure, and where life asks patience",
-    "Rahu": "hunger, obsession, foreign or unusual threads",
-    "Ketu": "release, intuition, and what you’ve already metabolized",
-}
-
-_GRAHA_D10_ROLE = {
-    "Lagna": "public mask and how you’re met in professional settings",
-    "Sun": "authority, recognition, and leadership in the world",
-    "Moon": "public mood, reputation for care, and workplace needs",
-    "Mars": "competition, technical fight, and drive on the job",
-    "Mercury": "analysis, messaging, deals, and skill-based work",
-    "Jupiter": "teaching, advising, ethics visible in career",
-    "Venus": "alliances, design, client harmony, and reward through people",
-    "Saturn": "long arcs, seniority, systems, and earned status",
-    "Rahu": "ambition, niche expertise, or unconventional career edges",
-    "Ketu": "detachment from titles, research, or behind-the-scenes mastery",
+# Short tags — one phrase each, no repeated chart lectures in every caption
+_GRAHA_TAG = {
+    "Lagna": "rising / body",
+    "Sun": "self & father",
+    "Moon": "mind & mother",
+    "Mars": "drive & conflict",
+    "Mercury": "speech & skill",
+    "Jupiter": "guidance & growth",
+    "Venus": "love & comfort",
+    "Saturn": "duty & time",
+    "Rahu": "hunger & odd paths",
+    "Ketu": "letting go & insight",
 }
 
 
 def _blurb(body: BodyPos, rel: str, d_high: int) -> str:
-    chart = "navamsa (D9)" if d_high == 9 else "dasamsa (D10)"
-    role = (
-        _GRAHA_D9_ROLE.get(body.name, "this point’s life themes")
-        if d_high == 9
-        else _GRAHA_D10_ROLE.get(body.name, "this point’s life themes")
-    )
-    head = ""
+    """One plain sentence: what is different for this graha only."""
+    dn = "D9" if d_high == 9 else "D10"
+    g = body.name
+    tag = _GRAHA_TAG.get(g, g)
     if rel == "same":
-        head = (
-            f"D1 and {chart} share the **same sign** — what shows at the rashi level and what refines in "
-            f"{chart} move together for **{body.name}** ({role}). The story is easier to read as one thread."
-        )
-    elif rel == "trine":
-        head = (
-            f"D1 and {chart} connect by **trine** — supportive, same-element resonance for **{body.name}** "
-            f"({role}). Outer life and the {chart} layer help each other without identical signs."
-        )
-    elif rel == "opposition":
-        head = (
-            f"D1 and {chart} **oppose** — a see-saw for **{body.name}** ({role}): the world sees one emphasis "
-            f"while {chart} matures through the opposite pole. Balance is the curriculum."
-        )
-    elif rel == "tension_6_8":
-        head = (
-            f"D1 and {chart} sit in a **6/8 (hidden-stress)** style link for **{body.name}** ({role}). "
-            "One layer must serve or transform the other; friction often becomes skill over time."
-        )
-    elif rel == "square":
-        head = (
-            f"D1 and {chart} **square** for **{body.name}** ({role}) — productive tension, decisions, "
-            f"and the need to act rather than drift. Channelled well, it builds competence."
-        )
-    else:
-        head = (
-            f"D1 and {chart} relate in a **mixed / neutral** way for **{body.name}** ({role}) — "
-            "not a loud harmony or clash; house lords, dignity, and transits finish the story."
-        )
-
-    tail = (
-        " In classical usage D9 refines marriage, subtle self, and *bhava* promise; weigh strength and aspects in a full chart."
-        if d_high == 9
-        else " D10 is read for career, office politics, and how effort becomes reputation — still only one slice of the whole map."
-    )
-    return head + tail
+        return f"**{g}** ({tag}): rashi and {dn} use the **same sign** — one thread, no split between layers."
+    if rel == "trine":
+        return f"**{g}** ({tag}): rashi and {dn} **trine** — same element, easy backup; not the same sign."
+    if rel == "opposition":
+        return f"**{g}** ({tag}): rashi and {dn} **oppose** — two ends to balance; neither cancels the other."
+    if rel == "tension_6_8":
+        return f"**{g}** ({tag}): rashi and {dn} in a **6/8** link — one side has to grow to feed the other."
+    if rel == "square":
+        return f"**{g}** ({tag}): rashi and {dn} **square** — push/pull; usually needs a clear choice or habit."
+    return f"**{g}** ({tag}): rashi and {dn} in a **mixed** link — small shift, not a headline clash."
 
 
 _REL_LABEL = {
@@ -129,7 +88,7 @@ def _count_relations(bodies: list, n: int) -> dict[str, int]:
 
 
 def chart_summary_markdown(bodies: list) -> str:
-    """Counts plus a short cross-chart reading."""
+    """Counts only — no repeated prose (details stay in each row + quick lists below)."""
     c9 = _count_relations(bodies, 9)
     c10 = _count_relations(bodies, 10)
     keys = ["same", "trine", "opposition", "tension_6_8", "square", "neutral"]
@@ -149,157 +108,60 @@ def chart_summary_markdown(bodies: list) -> str:
                 parts.append(f"**{labels[k]}**: {c[k]}")
         return ", ".join(parts) if parts else "—"
 
-    n = len(bodies)
-    same9 = c9.get("same", 0)
-    same10 = c10.get("same", 0)
-    easy9 = same9 + c9.get("trine", 0)
-    easy10 = same10 + c10.get("trine", 0)
-    hard9 = c9.get("tension_6_8", 0) + c9.get("square", 0)
-    hard10 = c10.get("tension_6_8", 0) + c10.get("square", 0)
-
-    story = []
-    if easy9 >= n * 0.55:
-        story.append(
-            "**Overall D9:** Many easy agreements (same or trine) between rashi and navamsa — inner and outer "
-            "versions of the grahas tend to rhyme; life themes may feel comparatively coherent."
-        )
-    elif hard9 >= n * 0.45:
-        story.append(
-            "**Overall D9:** Several sharp D1/D9 angles — inner refinement asks for honesty where the rashi story "
-            "is simple; relationships and subtle expectations often carry the integration homework."
-        )
-    else:
-        story.append(
-            "**Overall D9:** A mixed signature — some grahas echo cleanly in navamsa, others ask for translation. "
-            "Read the highlighted names in the list above as your personal “high attention” points."
-        )
-
-    if easy10 >= n * 0.55:
-        story.append(
-            "**Overall D10:** Strong trine/same flow into dasamsa — the way you work and are seen may follow "
-            "naturally from the birth-chart story, once skills catch up to the promise."
-        )
-    elif hard10 >= n * 0.45:
-        story.append(
-            "**Overall D10:** Career and public life may not mirror the rashi chart line-for-line — effort, "
-            "timing, and sometimes a second “public self” appear before reputation stabilizes."
-        )
-    else:
-        story.append(
-            "**Overall D10:** Moderate career overlay — neither fully mirrored nor fully opposed; promotion, "
-            "role changes, and mentors tend to clarify which D10 lines matter most."
-        )
-
-    return (
-        "**D9 layer (vs D1):** " + fmt(c9) + "\n\n"
-        "**D10 layer (vs D1):** " + fmt(c10) + "\n\n"
-        + "\n\n".join(story)
-    )
+    return "**D9 (rashi vs navamsa):** " + fmt(c9) + "\n\n**D10 (rashi vs dasamsa):** " + fmt(c10)
 
 
 def layer_comparison_narrative(bodies: list, n: int) -> str:
-    """Meaning-rich paragraph after per-point D1 vs D9 or D1 vs D10."""
+    """Name-only roll call: who matches, who stresses — no repeated theory."""
     assert n in (9, 10)
-    name = "navamsa (D9)" if n == 9 else "dasamsa (D10)"
-    focus = (
-        "subtle self, partnership tone, and how promises in the rashi chart ripen inwardly"
-        if n == 9
-        else "work, duty cycles, recognition, and the story your résumé tells the world"
-    )
-
-    vargotta = [b.name for b in bodies if b.sign_d1 == b.vargas[n]]
-    supportive = [
-        b.name
-        for b in bodies
-        if _relation(b.sign_d1, b.vargas[n]) == "trine"
-    ]
-    stressed = [
+    dn = f"D{n}"
+    same = [b.name for b in bodies if b.sign_d1 == b.vargas[n]]
+    trn = [b.name for b in bodies if _relation(b.sign_d1, b.vargas[n]) == "trine"]
+    opp = [b.name for b in bodies if _relation(b.sign_d1, b.vargas[n]) == "opposition"]
+    hard = [
         b.name
         for b in bodies
         if _relation(b.sign_d1, b.vargas[n]) in ("tension_6_8", "square")
     ]
-    opposed = [b.name for b in bodies if _relation(b.sign_d1, b.vargas[n]) == "opposition"]
-
-    chunks = [
-        f"Taken together, this **{name}** picture describes **{focus}**. "
-        "Same-sign pairs are often called *vargottama-style* echoes: the outer script and the divisional refinement "
-        "speak the same language. Trines add help without identical signs; 6/8 and squares ask you to convert "
-        "pressure into skill."
-    ]
-    if vargotta:
-        chunks.append(
-            "**Strongest resonance (D1 = D" + str(n) + "):** "
-            + ", ".join(f"**{x}**" for x in vargotta)
-            + " — these factors carry a double stamp; when you invest here, both layers respond."
-        )
-    if supportive:
-        chunks.append(
-            "**Supportive bridge:** " + ", ".join(f"**{x}**" for x in supportive) + "."
-        )
-    if opposed:
-        chunks.append(
-            "**Polarity to integrate:** " + ", ".join(f"**{x}**" for x in opposed) + " — negotiate both ends rather than picking one story."
-        )
-    if stressed:
-        chunks.append(
-            "**Growth-through-friction:** " + ", ".join(f"**{x}**" for x in stressed) + " — tension is information, not a verdict."
-        )
-
-    return "\n\n".join(chunks)
+    lines = []
+    if same:
+        lines.append(f"**Same rashi & {dn}:** {', '.join(same)}.")
+    if trn:
+        lines.append(f"**Trine only:** {', '.join(trn)}.")
+    if opp:
+        lines.append(f"**Opposite:** {', '.join(opp)}.")
+    if hard:
+        lines.append(f"**6/8 or square:** {', '.join(hard)}.")
+    if not lines:
+        return f"No grahas repeat the rashi sign in {dn}; every row above shows where that layer shifts."
+    return "\n".join(lines)
 
 
 def chart_assessment_markdown(bodies: list) -> str:
-    """Closing assessment (educational synthesis, not a full reading)."""
+    """At most one plain skew line per layer, else a single neutral line. No echo of captions."""
     c9 = _count_relations(bodies, 9)
     c10 = _count_relations(bodies, 10)
     n = len(bodies)
-    same9 = c9.get("same", 0)
-    same10 = c10.get("same", 0)
-    tense9 = c9.get("tension_6_8", 0) + c9.get("square", 0)
-    tense10 = c10.get("tension_6_8", 0) + c10.get("square", 0)
+    easy9 = c9.get("same", 0) + c9.get("trine", 0)
+    easy10 = c10.get("same", 0) + c10.get("trine", 0)
+    hard9 = c9.get("tension_6_8", 0) + c9.get("square", 0)
+    hard10 = c10.get("tension_6_8", 0) + c10.get("square", 0)
 
     lines = []
-    lines.append(
-        "**How to read this:** The per-point lines compare *rashi* (D1) with *navamsa* (D9) and *dasamsa* (D10). "
-        "The combined paragraphs name where life feels coherent vs where it asks you to grow. "
-        "**Nakshatra summaries** above spell out the emotional and mythic tone of each point."
-    )
+    if easy9 >= n * 0.65:
+        lines.append("Most grahas agree between rashi and D9 (same or trine).")
+    elif hard9 >= n * 0.5:
+        lines.append("Several grahas stress between rashi and D9 — those names are worth a second look.")
 
-    if same9 >= n * 0.4:
-        lines.append(
-            "**D9 pattern:** Several D1/D9 same-sign echoes — inner life and outer expression may line up "
-            "in a straightforward way; still judge dignity and house lords in a full chart."
-        )
-    elif tense9 >= n * 0.35:
-        lines.append(
-            "**D9 pattern:** Several 6/8 or square-type D1/D9 pairs — inner refinement and outer life "
-            "may pull in different directions until reconciled through practice and clarity."
-        )
-    else:
-        lines.append(
-            "**D9 pattern:** Mixed agreements between D1 and D9 — neither all-smooth nor all-friction; "
-            "specific grahas above need individual weighting."
-        )
+    if easy10 >= n * 0.65:
+        lines.append("Most grahas agree between rashi and D10 (same or trine).")
+    elif hard10 >= n * 0.5:
+        lines.append("Several grahas stress between rashi and D10 — work-life story may not match birth-chart signs line by line.")
 
-    if same10 >= n * 0.4:
-        lines.append(
-            "**D10 pattern:** Strong overlap between D1 and D10 signs for many points — career and public "
-            "role may mirror the rashi story closely."
-        )
-    elif tense10 >= n * 0.35:
-        lines.append(
-            "**D10 pattern:** Notable D1/D10 stress signatures — how you work and how you are seen can "
-            "take extra calibration over time."
-        )
-    else:
-        lines.append(
-            "**D10 pattern:** Moderate mix — use the per-point lines to see which grahas anchor work "
-            "visibility vs which ask for adjustment."
-        )
+    if not lines:
+        lines.append("No one blanket pattern wins; trust the row-by-row notes and the name lists.")
 
-    lines.append(
-        "*This block is a template-style synthesis for study. It is not a substitute for a full Jyotish reading.*"
-    )
+    lines.append("*Study aid only — not a full chart reading.*")
     return "\n\n".join(lines)
 
 
@@ -439,9 +301,8 @@ def nakshatra_picture_markdown(bodies: list) -> str:
     order = ["Lagna", "Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"]
     by_name = {b.name: b for b in bodies}
     blocks = [
-        "**Nakshatra picture** — the Moon’s mansion colors mind and memory; Lagna’s mansion tints "
-        "temperament; each graha lends its house’s “mood” to what that planet signifies. "
-        "Pada quarters fine-tune *how* the star’s story moves — not a different star, but a different gear."
+        "**Nakshatras** — Moon = inner climate; Lagna = how you step forward; other grahas tint what that planet means. "
+        "Pada is which quarter of the star (1–4), not a new star."
     ]
     for nm in order:
         b = by_name.get(nm)
