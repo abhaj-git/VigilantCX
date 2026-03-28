@@ -1,8 +1,20 @@
 """
 Parashari-style divisional signs from sidereal ecliptic longitude (0–360°).
-Widely used software conventions; cross-check critical charts with JHora / your guru.
+Navamsa slice index uses Decimal so float noise does not flip the wrong pada.
 """
 from __future__ import annotations
+
+from decimal import ROUND_FLOOR, Decimal
+
+
+def _part_in_sign(deg: float, divisions: int) -> int:
+    """Index 0 .. divisions-1 for equal slices of 30° (left-closed intervals)."""
+    if not 1 <= divisions <= 60:
+        raise ValueError("divisions out of range")
+    d = Decimal(str(deg))
+    q = (d * Decimal(divisions) / Decimal(30)).to_integral_value(rounding=ROUND_FLOOR)
+    p = int(q)
+    return min(divisions - 1, max(0, p))
 
 
 def _rashi(lon: float) -> int:
@@ -66,37 +78,35 @@ def varga_sign(lon: float, d: int) -> int:
         return 3 if h == 0 else 4
 
     if d == 3:
-        part = min(2, int(deg // 10))
+        part = _part_in_sign(deg, 3)
         return [r, (r + 4) % 12, (r + 8) % 12][part]
 
     if d == 4:
-        part = min(3, int(deg // 7.5))
+        part = _part_in_sign(deg, 4)
         return (r + [0, 3, 6, 9][part]) % 12
 
     if d == 5:
-        part = min(4, int(deg // 6))
+        part = _part_in_sign(deg, 5)
         return (_navamsa_start(r) + part) % 12
 
     if d == 6:
-        part = min(5, int(deg // 5))
+        part = _part_in_sign(deg, 6)
         return (_navamsa_start(r) + part) % 12
 
     if d == 7:
-        part = min(6, int(deg // (30.0 / 7)))
+        part = _part_in_sign(deg, 7)
         return (_d7_start(r) + part) % 12
 
     if d == 8:
-        part = min(7, int(deg // (30.0 / 8)))
+        part = _part_in_sign(deg, 8)
         return (_d8_start(r) + part) % 12
 
     if d == 9:
-        part = min(8, int(deg * 9 // 30))
-        if part > 8:
-            part = 8
+        part = _part_in_sign(deg, 9)
         return (_navamsa_start(r) + part) % 12
 
     if d == 10:
-        part = min(9, int(deg // 3))
+        part = _part_in_sign(deg, 10)
         start = r if (r % 2 == 0) else (r + 8) % 12
         return (start + part) % 12
 

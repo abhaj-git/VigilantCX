@@ -25,6 +25,15 @@ SIGNS = [
 FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED | swe.FLG_SIDEREAL
 
 
+def ayanamsa_choices() -> list[tuple[str, int]]:
+    """Labels and Swiss Ephemeris sidereal mode constants."""
+    return [
+        ("Lahiri (Chitrapaksha)", swe.SIDM_LAHIRI),
+        ("Raman", swe.SIDM_RAMAN),
+        ("Krishnamurti (KP)", swe.SIDM_KRISHNAMURTI),
+    ]
+
+
 @dataclass
 class BodyPos:
     name: str
@@ -45,12 +54,18 @@ def _jd_ut(dt_utc: datetime) -> float:
     return swe.julday(dt_utc.year, dt_utc.month, dt_utc.day, hour)
 
 
-def compute_chart(dt_utc: datetime, lat: float, lon: float) -> list[BodyPos]:
+def compute_chart(
+    dt_utc: datetime,
+    lat: float,
+    lon: float,
+    *,
+    sid_mode: int | None = None,
+) -> list[BodyPos]:
     """
-    Lahiri sidereal positions. dt_utc must be timezone-aware UTC.
-    Returns bodies with Lagna first, then Grahas.
+    Sidereal positions (ayanamsa set via sid_mode, default Lahiri).
+    dt_utc must be timezone-aware UTC. Returns bodies with Lagna first, then Grahas.
     """
-    swe.set_sid_mode(swe.SIDM_LAHIRI)
+    swe.set_sid_mode(sid_mode if sid_mode is not None else swe.SIDM_LAHIRI)
     jd = _jd_ut(dt_utc)
 
     bodies_spec = [

@@ -5,7 +5,7 @@ Run from repo root:  streamlit run vedic_chart/app.py
 from __future__ import annotations
 
 import sys
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 
 import streamlit as st
@@ -18,8 +18,14 @@ if str(ROOT) not in sys.path:
 from geopy.geocoders import Nominatim
 from timezonefinder import TimezoneFinder
 
-from vedic_chart.ephemeris import compute_chart
-from vedic_chart.interpret import compare_d1_dn, chart_assessment_markdown, chart_summary_markdown
+from vedic_chart.ephemeris import ayanamsa_choices, compute_chart
+from vedic_chart.interpret import (
+    chart_assessment_markdown,
+    chart_summary_markdown,
+    compare_d1_dn,
+    layer_comparison_narrative,
+    nakshatra_picture_markdown,
+)
 
 st.set_page_config(
     page_title="Vedic chart workbench",
@@ -29,13 +35,12 @@ st.set_page_config(
 
 st.title("Vedic chart workbench")
 st.caption(
-    "Lahiri sidereal · Swiss Ephemeris · Parashari-style D1–D10 (verify critical charts in JHora). "
-    "Educational templates — not medical, legal, or financial advice."
+    "Swiss Ephemeris · Parashari-style D1–D10 (verify critical charts in JHora). "
+    "Pick the **same ayanamsa** as the software you compare to. Educational templates only."
 )
 
 
 def _to_24h(hour_12: int, minute: int, am_pm: str) -> tuple[int, int]:
-    # hour_12: 1–12
     if am_pm == "AM":
         h24 = 0 if hour_12 == 12 else hour_12
     else:
@@ -56,12 +61,25 @@ def resolve_place(place: str) -> tuple[float, float, str]:
     return lat, lon, tzname
 
 
+_ayan_labels = [a[0] for a in ayanamsa_choices()]
+_ayan_modes = [a[1] for a in ayanamsa_choices()]
+_today = date.today()
+_default_dob = date(1990, 1, 15)
+if _default_dob > _today:
+    _default_dob = _today
+
 with st.sidebar:
     st.header("Birth data")
     city = st.text_input("City / town", placeholder="e.g. Mumbai")
     state = st.text_input("State / region", placeholder="e.g. Maharashtra")
     country = st.text_input("Country", placeholder="e.g. India")
-    birth_date = st.date_input("Date of birth")
+    ayan_ix = st.selectbox("Ayanamsa", options=range(len(_ayan_labels)), format_func=lambda i: _ayan_labels[i], index=0)
+    birth_date = st.date_input(
+        "Date of birth",
+        value=_default_dob,
+        min_value=date(1800, 1, 1),
+        max_value=_today,
+    )
     st.markdown("**Time of birth (local)**")
     c1, c2, c3 = st.columns(3)
     with c1:
@@ -113,17 +131,29 @@ if run:
         tzinfo=ZoneInfo(tzname),
     )
     utc_dt = local_dt.astimezone(ZoneInfo("UTC"))
+    sid_mode = _ayan_modes[ayan_ix]
+    ayan_label = _ayan_labels[ayan_ix]
 
     try:
-        bodies = compute_chart(utc_dt, lat, lon)
+        bodies = compute_chart(utc_dt, lat, lon, sid_mode=sid_mode)
     except Exception as e:
         st.error(f"Ephemeris error: {e}")
         st.stop()
 
-    st.success(
-        f"**Resolved:** {place_query} → {lat:.4f}°, {lon:.4f}° · **{tzname}** · "
+    st.markdown(
+        f"**Resolved:** {place_query} → {lat:.4f}°, {lon:.4f}° · **{tzname}** · **{ayan_label}** · "
         f"Local **{local_dt:%Y-%m-%d %I:%M %p}** · UTC **{utc_dt:%Y-%m-%d %H:%M}**"
     )
+
+    with st.expander("Technical — sidereal longitude & D1/D9 (for cross-check)"):
+        st.caption("Compare these longitudes and signs with your reference app using the **same ayanamsa** and **exact birth local time**.")
+        for name in ("Lagna", "Moon", "Sun", "Saturn"):
+            b = next((x for x in bodies if x.name == name), None)
+            if b:
+                st.markdown(
+                    f"**{b.name}** · λ {b.lon:.5f}° · D1 **{b.sign_d1}** · D9 **{b.vargas[9]}** · "
+                    f"nakshatra **{b.nakshatra}** pada **{b.pada}**"
+                )
 
     st.subheader("D1 vs D9 — per point")
     for b in bodies:
@@ -131,11 +161,20 @@ if run:
         st.markdown(f"- {line}")
         st.caption(blurb)
 
+    st.subheader("D9 — how the pattern reads together")
+    st.markdown(layer_comparison_narrative(bodies, 9))
+
     st.subheader("D1 vs D10 — per point")
     for b in bodies:
         line, blurb = compare_d1_dn(b, 10)
         st.markdown(f"- {line}")
         st.caption(blurb)
+
+    st.subheader("D10 — how the pattern reads together")
+    st.markdown(layer_comparison_narrative(bodies, 10))
+
+    st.subheader("Nakshatra summaries")
+    st.markdown(nakshatra_picture_markdown(bodies))
 
     st.subheader("Summary")
     st.markdown(chart_summary_markdown(bodies))
