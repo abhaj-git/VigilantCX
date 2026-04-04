@@ -3,26 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Abha — Tarot, Vedic astrology, and Bhrigu Nandi Nadi consultations. A gentle space for clarity, timing, and remembering that all is well." />
-  <meta name="theme-color" content="#fffce8" />
-  <title>Abha — Tarot &amp; Jyotish Consultations</title>
+  <meta name="description" content="Bright Life Astrology — Vedic astrology, Tarot, and Bhrigu Nandi Nadi. Clarity, timing, and counsel rooted in tradition, offered with warmth and precision." />
+  <meta name="theme-color" content="#faf8f4" />
+  <title>Bright Life Astrology — Tarot &amp; Jyotish Consultations</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --white: #ffffff;
-      --cream: #fffce8;
-      --sun: #fff59a;
-      --sun-deep: #ffd633;
-      --sky: #4db8f0;
-      --sky-soft: #9ee0ff;
-      --violet: #a67fe8;
-      --violet-deep: #6f3dd4;
-      --lavender: #efe4ff;
-      --text: #2c2838;
-      --text-soft: #5a5568;
-      --line: rgba(111, 61, 212, 0.18);
+      --white: #faf8f4;
+      --paper: #ffffff;
+      --champagne: #f5efe6;
+      --gold: #c9a227;
+      --gold-soft: #e8d5a3;
+      --gold-deep: #8a6b1b;
+      --dawn: #c4d4e8;
+      --twilight: #6b7c9e;
+      --midnight: #1c2333;
+      --ink: #2a2633;
+      --muted: #5c5766;
+      --line: rgba(28, 35, 51, 0.1);
+      --line-strong: rgba(201, 162, 39, 0.35);
     }
 
     *,
@@ -40,10 +41,11 @@
       font-family: "Source Sans 3", system-ui, sans-serif;
       font-weight: 400;
       font-size: 1.0625rem;
-      line-height: 1.65;
-      color: var(--text);
-      background: var(--white);
+      line-height: 1.7;
+      color: var(--ink);
+      background: var(--paper);
       min-height: 100vh;
+      font-feature-settings: "kern" 1, "liga" 1;
     }
 
     .bg-floral {
@@ -52,79 +54,103 @@
       pointer-events: none;
       z-index: 0;
       background:
-        radial-gradient(ellipse 120% 80% at 0% 0%, rgba(255, 230, 90, 0.62) 0%, transparent 52%),
-        radial-gradient(ellipse 100% 70% at 100% 8%, rgba(120, 215, 255, 0.58) 0%, transparent 48%),
-        radial-gradient(ellipse 90% 58% at 50% 100%, rgba(200, 170, 255, 0.55) 0%, transparent 42%),
-        linear-gradient(180deg, var(--cream) 0%, var(--white) 32%, #f6f0ff 100%);
+        radial-gradient(ellipse 100% 70% at 0% -5%, rgba(232, 213, 163, 0.45) 0%, transparent 55%),
+        radial-gradient(ellipse 90% 60% at 100% 0%, rgba(196, 212, 232, 0.4) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 50% at 50% 105%, rgba(245, 239, 230, 0.9) 0%, transparent 45%),
+        linear-gradient(180deg, var(--white) 0%, var(--paper) 40%, #f0ebe3 100%);
     }
 
     .bg-floral::after {
       content: "";
       position: absolute;
       inset: 0;
-      opacity: 0.48;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath fill='%237a3dd4' fill-opacity='0.12' d='M60 20c4 8 8 12 20 12-12 0-16 4-20 12-4-8-8-12-20-12 12 0 16-4 20-12zm0 68c4 8 8 12 20 12-12 0-16 4-20 12-4-8-8-12-20-12 12 0 16-4 20-12z'/%3E%3Cpath fill='%23ffc820' fill-opacity='0.18' d='M20 60c8 4 12 8 12 20 0-12 4-16 12-20-8-4-12-8-12-20 0 12-4 16-12 20zm68 0c8 4 12 8 12 20 0-12 4-16 12-20-8-4-12-8-12-20 0 12-4 16-12 20z'/%3E%3C/svg%3E");
+      opacity: 0.35;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cpath fill='%231c2333' fill-opacity='0.04' d='M70 24c5 9 9 14 24 14-15 0-19 5-24 14-5-9-9-14-24-14 15 0 19-5 24-14zm0 80c5 9 9 14 24 14-15 0-19 5-24 14-5-9-9-14-24-14 15 0 19-5 24-14z'/%3E%3C/svg%3E");
     }
 
     .wrap {
       position: relative;
       z-index: 1;
-      max-width: 42rem;
+      max-width: 46rem;
       margin: 0 auto;
-      padding: clamp(2rem, 6vw, 4rem) clamp(1.25rem, 5vw, 2rem) 4rem;
+      padding: clamp(2.5rem, 7vw, 4.5rem) clamp(1.35rem, 5vw, 2.25rem) 4.5rem;
     }
 
     header {
       text-align: center;
-      padding-bottom: 2.5rem;
+      padding-bottom: 2.75rem;
       border-bottom: 1px solid var(--line);
     }
 
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+    }
+
     .mark {
-      display: inline-block;
       font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: clamp(2.75rem, 8vw, 3.75rem);
+      font-size: clamp(2.25rem, 6.5vw, 3.25rem);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--midnight);
+      line-height: 1.05;
+      text-transform: none;
+    }
+
+    .mark-accent {
+      display: block;
+      font-size: 0.42em;
       font-weight: 500;
-      letter-spacing: 0.02em;
-      color: var(--violet-deep);
-      line-height: 1.1;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-deep);
+      margin-top: 0.5rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--line-strong);
+      max-width: 12rem;
     }
 
     .tagline {
-      margin: 1rem 0 0;
+      margin: 1.35rem 0 0;
       font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 1.35rem;
+      font-size: 1.2rem;
       font-style: italic;
       font-weight: 400;
-      color: var(--text-soft);
+      color: var(--twilight);
+      letter-spacing: 0.02em;
     }
 
     .hope {
-      margin-top: 1.75rem;
-      padding: 1rem 1.25rem;
-      background: linear-gradient(135deg, rgba(255, 230, 100, 0.55) 0%, rgba(140, 220, 255, 0.45) 45%, rgba(210, 185, 255, 0.5) 100%);
-      border-radius: 0.75rem;
-      border: 1px solid rgba(255, 200, 50, 0.55);
+      margin-top: 2rem;
+      padding: 1.25rem 1.5rem;
+      background: linear-gradient(145deg, rgba(245, 239, 230, 0.95) 0%, rgba(255, 255, 255, 0.88) 100%);
+      border-radius: 2px;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--gold);
       font-size: 0.98rem;
-      color: var(--text);
+      color: var(--ink);
+      text-align: left;
+      box-shadow: 0 12px 40px rgba(28, 35, 51, 0.06);
     }
 
     section {
-      margin-top: 2.5rem;
+      margin-top: 2.75rem;
     }
 
     h2 {
       font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 1.65rem;
+      font-size: 1.5rem;
       font-weight: 600;
-      color: var(--violet-deep);
-      margin: 0 0 1rem;
-      letter-spacing: 0.02em;
+      color: var(--midnight);
+      margin: 0 0 1.1rem;
+      letter-spacing: 0.03em;
     }
 
     p {
-      margin: 0 0 1rem;
-      color: var(--text-soft);
+      margin: 0 0 1.1rem;
+      color: var(--muted);
     }
 
     p:last-child {
@@ -133,49 +159,66 @@
 
     .lead {
       font-size: 1.125rem;
-      color: var(--text);
+      color: var(--ink);
+      font-weight: 400;
     }
 
     .services {
       display: grid;
-      gap: 1.25rem;
+      gap: 1.35rem;
     }
 
     .card {
-      padding: 1.35rem 1.5rem;
-      background: rgba(255, 255, 255, 0.75);
+      padding: 1.5rem 1.6rem;
+      background: rgba(255, 255, 255, 0.82);
       border: 1px solid var(--line);
-      border-radius: 0.65rem;
-      box-shadow: 0 8px 28px rgba(111, 61, 212, 0.1);
+      border-radius: 2px;
+      box-shadow: 0 4px 24px rgba(28, 35, 51, 0.06);
+      transition: box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 32px rgba(28, 35, 51, 0.09);
     }
 
     .card h3 {
       font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 1.35rem;
+      font-size: 1.28rem;
       font-weight: 600;
-      margin: 0 0 0.5rem;
-      color: var(--violet-deep);
+      margin: 0 0 0.55rem;
+      color: var(--midnight);
+      letter-spacing: 0.02em;
     }
 
     .card p {
       font-size: 0.98rem;
+      line-height: 1.68;
     }
 
     .card-icon {
       float: left;
       width: 2.5rem;
       height: 2.5rem;
-      margin: 0 0.85rem 0.5rem 0;
+      margin: 0 0.9rem 0.5rem 0;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
+      color: var(--midnight);
     }
 
-    .card-icon.tarot { background: linear-gradient(145deg, var(--sun), var(--sun-deep)); }
-    .card-icon.vedic { background: linear-gradient(145deg, var(--sky-soft), var(--sky)); }
-    .card-icon.nadi { background: linear-gradient(145deg, var(--lavender), var(--violet)); }
+    .card-icon.tarot {
+      background: linear-gradient(145deg, var(--gold-soft), var(--gold));
+    }
+
+    .card-icon.vedic {
+      background: linear-gradient(145deg, var(--dawn), #9eb4d4);
+    }
+
+    .card-icon.nadi {
+      background: linear-gradient(145deg, var(--champagne), #ddd5c8);
+    }
 
     .card::after {
       content: "";
@@ -184,16 +227,17 @@
     }
 
     .cta {
-      margin-top: 2.75rem;
-      padding: 1.75rem;
+      margin-top: 3rem;
+      padding: 2rem 1.75rem;
       text-align: center;
-      background: linear-gradient(160deg, rgba(255, 252, 230, 0.98) 0%, rgba(200, 175, 255, 0.35) 55%, rgba(150, 210, 255, 0.28) 100%);
+      background: linear-gradient(165deg, var(--champagne) 0%, rgba(255, 255, 255, 0.92) 100%);
       border: 1px solid var(--line);
-      border-radius: 0.75rem;
+      border-radius: 2px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
     }
 
     .cta p {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.35rem;
       font-size: 0.95rem;
     }
 
@@ -209,49 +253,52 @@
       align-items: center;
       justify-content: center;
       min-height: 2.75rem;
-      padding: 0.6rem 1.35rem;
+      padding: 0.6rem 1.4rem;
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
+      letter-spacing: 0.02em;
       text-decoration: none;
-      border-radius: 999px;
-      border: 2px solid transparent;
+      border-radius: 2px;
+      border: 1px solid transparent;
       cursor: default;
-      opacity: 0.92;
+      opacity: 0.9;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #ffcf20, #fff176);
-      color: #1a1530;
-      border-color: rgba(255, 180, 0, 0.65);
+      background: linear-gradient(180deg, #d4b84a, #b8942a);
+      color: var(--midnight);
+      border-color: rgba(138, 107, 27, 0.4);
     }
 
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.95);
-      color: var(--violet-deep);
-      border-color: #9d65f0;
+      background: var(--paper);
+      color: var(--midnight);
+      border-color: var(--line);
     }
 
     .btn-note {
       display: block;
-      margin-top: 0.75rem;
+      margin-top: 0.85rem;
       font-size: 0.8rem;
-      color: var(--text-soft);
+      color: var(--muted);
       font-style: italic;
     }
 
     footer {
-      margin-top: 3rem;
-      padding-top: 1.5rem;
+      margin-top: 3.25rem;
+      padding-top: 1.75rem;
       border-top: 1px solid var(--line);
       text-align: center;
-      font-size: 0.85rem;
-      color: var(--text-soft);
+      font-size: 0.82rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
     }
 
     footer em {
-      color: var(--violet);
-      font-style: italic;
+      color: var(--gold-deep);
+      font-style: normal;
+      font-weight: 500;
     }
   </style>
 </head>
@@ -259,68 +306,70 @@
   <div class="bg-floral" aria-hidden="true"></div>
   <div class="wrap">
     <header>
-      <h1 class="mark">Abha</h1>
+      <div class="brand">
+        <h1 class="mark">Bright Life<span class="mark-accent">Astrology</span></h1>
+      </div>
       <p class="tagline">Tarot · Vedic astrology · Bhrigu Nandi Nadi</p>
       <p class="hope">
-        However the path bends today, you are not alone in walking it. This work is offered in the quiet faith that clarity softens worry, and that beneath every season—still—<strong>all is well</strong>.
+        A bright life is not one without shadow—it is one seen clearly. Here, insight is offered with care: so worry loosens its grip, timing comes into view, and you can move with steadier ground beneath you. <strong>Bright Life Astrology</strong> holds that clarity itself is a kind of light.
       </p>
     </header>
 
     <section aria-labelledby="about-heading">
-      <h2 id="about-heading">A space for honest seeing</h2>
+      <h2 id="about-heading">Counsel for the living map</h2>
       <p class="lead">
-        I hold space for people who are carrying real questions: about love, work, family, timing, loss, and the next faithful step. Nothing here is about fear or theatrics. Tarot speaks in symbols; Jyotish maps the sky you were born under; Nadi carries the thread of karmic pattern in the tradition of the sages. Together they do not replace your agency—they help you listen more deeply to it.
+        I work with people who bring real questions—about love, work, family, seasons of change, and what comes next. There are no theatrics here, only depth. Tarot speaks in images; Jyotish reads the sky you were born beneath; Bhrigu Nandi Nadi carries the thread of pattern in the lineage of the sages. None of this replaces your agency; it sharpens how you listen to it.
       </p>
       <p>
-        When we sit together, we are not chasing a fixed fate. We are looking for coherence: how the moment you are in rhymes with the larger story, so that anxiety can loosen and hope can find a place to land. That is the heart of this practice—spiritual in the oldest sense: <em>breathing room for the soul</em>.
+        In session, we are not pinning down a fixed fate. We are tracing coherence—how this chapter rhymes with the longer story—so that fear can yield a little and hope can find room. That is the spirit of <strong>Bright Life Astrology</strong>: luminous enough to see by, grounded enough to trust.
       </p>
     </section>
 
     <section aria-labelledby="services-heading">
-      <h2 id="services-heading">What I offer</h2>
+      <h2 id="services-heading">Offerings</h2>
       <div class="services">
         <article class="card">
           <div class="card-icon tarot" aria-hidden="true">✦</div>
           <h3>Tarot</h3>
           <p>
-            Intuitive, grounded readings that name what is moving in your inner and outer life. The cards mirror patterns and possibilities so you can choose with eyes open—not from panic, but from presence.
+            Readings that stay close to what is moving—within you and around you. The cards name patterns and openings so your choices can be deliberate: informed by intuition, not driven by noise.
           </p>
         </article>
         <article class="card">
           <div class="card-icon vedic" aria-hidden="true">☉</div>
           <h3>Vedic astrology (Jyotish)</h3>
           <p>
-            Chart-based insight from the sidereal zodiac: strengths, seasons of effort, and windows of support. Useful for timing, relationships, and understanding the “why now” behind recurring themes.
+            Sidereal chart work: strengths, stretches of effort, and windows that favour action or patience. Suited to timing, relationship dynamics, and the recurring “why now” beneath the surface of events.
           </p>
         </article>
         <article class="card">
           <div class="card-icon nadi" aria-hidden="true">◇</div>
           <h3>Bhrigu Nandi Nadi</h3>
           <p>
-            Consultations rooted in the Nadi stream attributed to Maharishi Bhrigu—exploring karmic threads and life direction with reverence for the tradition. Where it is appropriate, this can deepen perspective on purpose and passage.
+            Consultations in the Nadi stream of Maharishi Bhrigu—karmic themes and life direction held with respect for the tradition. Where it fits, this can deepen perspective on purpose and passage.
           </p>
         </article>
       </div>
     </section>
 
     <section aria-labelledby="peace-heading">
-      <h2 id="peace-heading">Everything is going to be alright</h2>
+      <h2 id="peace-heading">Light that lasts</h2>
       <p>
-        Not because pain is denied, but because you are more than a single chapter. Healing and right timing often arrive quietly—after honesty, after rest, after one small brave choice. My role is to reflect the map with care, so you remember: the light does not ask you to be perfect. It asks you to stay true. In that truth, many people find the same gentle sentence on repeat: <strong>it will be alright</strong>. Not always on our schedule—yet alright all the same.
+        Healing and right timing often arrive quietly—after honesty, rest, and one brave small step. The work of <strong>Bright Life Astrology</strong> is to reflect the map with precision and warmth: the light does not demand perfection; it asks for truth. In that truth, many people hear the same quiet assurance—<strong>it will be alright</strong>. Not always on our timetable; still, alright.
       </p>
     </section>
 
     <div class="cta">
-      <p><strong>Appointments &amp; offerings</strong><br />Secure payment and WhatsApp booking will appear here soon.</p>
+      <p><strong>Bright Life Astrology</strong> — appointments &amp; offerings<br />Secure payment and WhatsApp booking will appear here soon.</p>
       <div class="btn-row">
         <span class="btn btn-primary" role="button" aria-disabled="true">Pay &amp; book — coming soon</span>
         <span class="btn btn-secondary" role="button" aria-disabled="true">WhatsApp — coming soon</span>
       </div>
-      <span class="btn-note">You’ll be able to choose a time and complete payment in one calm flow.</span>
+      <span class="btn-note">You’ll be able to choose a time and complete payment in one straightforward flow.</span>
     </div>
 
     <footer>
-      <p>With love and steadiness — <em>Abha</em></p>
+      <p><em>Bright Life Astrology</em> — with care and clarity</p>
     </footer>
   </div>
 </body>
