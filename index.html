@@ -106,6 +106,19 @@
       gap: 0.15rem;
     }
 
+    .brand-logo {
+      margin: 0;
+      line-height: 0;
+    }
+
+    .brand-logo img {
+      width: min(100%, 22rem);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 4px 24px rgba(123, 31, 162, 0.14));
+    }
+
     .mark {
       font-family: "Cormorant Garamond", Georgia, serif;
       font-size: clamp(2.25rem, 6.5vw, 3.25rem);
@@ -373,7 +386,13 @@
   <div class="wrap">
     <header>
       <div class="brand">
-        <h1 class="mark">Bright Life<span class="mark-accent">Astrology</span></h1>
+        <h1 class="brand-logo">
+          <img
+            src="assets/bright-life-astrology-logo.png"
+            alt="Bright Life Astrology"
+            width="352"
+          />
+        </h1>
       </div>
       <p class="tagline">Tarot · Vedic astrology · Bhrigu Nandi Nadi</p>
       <p class="hope">
