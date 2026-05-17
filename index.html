@@ -167,10 +167,23 @@
     .tier:nth-child(1) { background: linear-gradient(145deg, rgba(255,249,196,.95), rgba(255,255,255,.92)); border-color: rgba(255,193,7,.45); box-shadow: 0 4px 16px rgba(255,193,7,.1); }
     .tier:nth-child(2) { background: linear-gradient(145deg, rgba(252,228,255,.95), rgba(255,255,255,.92)); border-color: rgba(186,104,200,.4); box-shadow: 0 4px 16px rgba(171,71,188,.08); }
     .tier:nth-child(3) { background: linear-gradient(145deg, rgba(255,249,196,.5), rgba(243,229,245,.9)); border-color: rgba(171,71,188,.35); box-shadow: 0 4px 16px rgba(142,36,170,.08); }
-    .tier-header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.2rem; }
-    .tier-name { font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.15rem; font-weight: 600; color: var(--mauve-deep); margin: 0; }
-    .tier-price { font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.05rem; font-weight: 700; color: var(--gold-deep); }
-    .tier-details { margin: 0; font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+    .tier-header { margin-bottom: 0.35rem; }
+    .tier-name {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.2rem; font-weight: 600; color: var(--mauve-deep); margin: 0 0 0.25rem;
+    }
+    .tier-price {
+      display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap;
+    }
+    .tier-price-usd {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.55rem; font-weight: 700; color: var(--gold-deep);
+    }
+    .tier-price-inr {
+      font-family: "Source Sans 3", system-ui, sans-serif;
+      font-size: 0.88rem; font-weight: 500; color: var(--muted);
+    }
+    .tier-details { margin: 0.3rem 0 0; font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
     .tier-badge {
       display: inline-block; padding: 0.1rem 0.5rem; font-size: 0.65rem;
       font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
@@ -285,21 +298,30 @@
         <article class="tier">
           <div class="tier-header">
             <h3 class="tier-name">Mini Reading</h3>
-            <span class="tier-price">$5 / &#x20B9;399</span>
+            <div class="tier-price">
+              <span class="tier-price-usd">$5</span>
+              <span class="tier-price-inr">&#x20B9;399</span>
+            </div>
           </div>
           <p class="tier-details">2 questions &mdash; delivered as <strong>voice notes</strong> on WhatsApp.</p>
         </article>
         <article class="tier">
           <div class="tier-header">
             <h3 class="tier-name">Focus Session <span class="tier-badge">Popular</span></h3>
-            <span class="tier-price">$11 / &#x20B9;999</span>
+            <div class="tier-price">
+              <span class="tier-price-usd">$11</span>
+              <span class="tier-price-inr">&#x20B9;999</span>
+            </div>
           </div>
           <p class="tier-details">15-minute live session &mdash; one topic, explored deeply.</p>
         </article>
         <article class="tier">
           <div class="tier-header">
             <h3 class="tier-name">Deep Reading <span class="tier-badge">Comprehensive</span></h3>
-            <span class="tier-price">$21 / &#x20B9;1,799</span>
+            <div class="tier-price">
+              <span class="tier-price-usd">$21</span>
+              <span class="tier-price-inr">&#x20B9;1,799</span>
+            </div>
           </div>
           <p class="tier-details">30-minute in-depth session &mdash; full chart reading, multiple questions.</p>
         </article>
