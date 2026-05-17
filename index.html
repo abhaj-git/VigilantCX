@@ -3,533 +3,382 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Bright Life Astrology · Tarot, Vedic Jyotish &amp; Bhrigu Nandi Nadi. An old soul with a tech background; readings with warmth, clarity, and room for your agency. WhatsApp +1 248-222-9242 (US)." />
+  <meta name="description" content="Bright Life Astrology &middot; Tarot, Vedic Jyotish &amp; Bhrigu Nandi Nadi. An old soul with a tech background; readings with warmth, clarity, and room for your agency. WhatsApp +1 248-222-9242 (US)." />
   <meta name="theme-color" content="#fff59d" />
-  <title>Bright Life Astrology · Tarot &amp; Jyotish Consultations</title>
+  <title>Bright Life Astrology &middot; Tarot &amp; Jyotish Consultations</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
   <style>
     :root {
-      /* Bright yellow family */
-      --lemon: #fffef5;
-      --butter: #fff9c4;
-      --sun: #fff176;
-      --sun-rich: #ffeb3b;
-      --gold: #ffc107;
-      --gold-deep: #f57f17;
-      /* Mauve / lilac */
-      --mauve-pale: #fce4ff;
-      --mauve-light: #e1bee7;
-      --mauve: #ce93d8;
-      --mauve-rich: #ab47bc;
-      --mauve-deep: #7b1fa2;
-      --lilac-glow: #e8d5f2;
-      --surfaces: #ffffff;
-      --midnight: #1a0d2e;
-      --ink: #2d1f3d;
-      --muted: #5d4a6a;
-      --line: rgba(171, 71, 188, 0.2);
-      --line-yellow: rgba(255, 193, 7, 0.45);
+      --lemon: #fffef5; --butter: #fff9c4; --sun: #fff176;
+      --sun-rich: #ffeb3b; --gold: #ffc107; --gold-deep: #f57f17;
+      --mauve-pale: #fce4ff; --mauve-light: #e1bee7; --mauve: #ce93d8;
+      --mauve-rich: #ab47bc; --mauve-deep: #7b1fa2;
+      --midnight: #1a0d2e; --ink: #2d1f3d; --muted: #5d4a6a;
     }
-
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      margin: 0;
-      font-family: "Source Sans 3", system-ui, sans-serif;
-      font-weight: 400;
-      font-size: 1.0625rem;
-      line-height: 1.7;
-      color: var(--ink);
-      background: var(--butter);
-      min-height: 100vh;
-      font-feature-settings: "kern" 1, "liga" 1;
+      margin: 0; font-family: "Source Sans 3", system-ui, sans-serif;
+      font-weight: 400; font-size: 1.0625rem; line-height: 1.7;
+      color: var(--ink); background: var(--butter); min-height: 100vh;
     }
 
     .bg-floral {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background:
-        radial-gradient(ellipse 120% 85% at 0% 0%, rgba(255, 235, 59, 0.85) 0%, rgba(255, 249, 196, 0.5) 38%, transparent 62%),
-        radial-gradient(ellipse 110% 80% at 100% 5%, rgba(206, 147, 216, 0.65) 0%, rgba(225, 190, 231, 0.4) 42%, transparent 58%),
-        radial-gradient(ellipse 100% 60% at 50% 100%, rgba(255, 241, 118, 0.55) 0%, transparent 50%),
-        radial-gradient(ellipse 80% 50% at 20% 60%, rgba(243, 229, 245, 0.9) 0%, transparent 45%),
+        radial-gradient(ellipse 120% 85% at 0% 0%, rgba(255,235,59,.85) 0%, rgba(255,249,196,.5) 38%, transparent 62%),
+        radial-gradient(ellipse 110% 80% at 100% 5%, rgba(206,147,216,.65) 0%, rgba(225,190,231,.4) 42%, transparent 58%),
+        radial-gradient(ellipse 100% 60% at 50% 100%, rgba(255,241,118,.55) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 50% at 20% 60%, rgba(243,229,245,.9) 0%, transparent 45%),
         linear-gradient(165deg, var(--lemon) 0%, var(--butter) 28%, #f3e5f5 72%, var(--mauve-pale) 100%);
     }
-
     .bg-floral::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      opacity: 0.5;
+      content: ""; position: absolute; inset: 0; opacity: 0.5;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath fill='%23ab47bc' fill-opacity='0.12' d='M60 20c4 8 8 12 20 12-12 0-16 4-20 12-4-8-8-12-20-12 12 0 16-4 20-12zm0 68c4 8 8 12 20 12-12 0-16 4-20 12-4-8-8-12-20-12 12 0 16-4 20-12z'/%3E%3Cpath fill='%23ffc107' fill-opacity='0.2' d='M20 60c8 4 12 8 12 20 0-12 4-16 12-20-8-4-12-8-12-20 0 12-4 16-12 20zm68 0c8 4 12 8 12 20 0-12 4-16 12-20-8-4-12-8-12-20 0 12-4 16-12 20z'/%3E%3C/svg%3E");
     }
 
     .wrap {
-      position: relative;
-      z-index: 1;
-      max-width: 46rem;
-      margin: 0 auto;
-      padding: clamp(2.5rem, 7vw, 4.5rem) clamp(1.35rem, 5vw, 2.25rem) 4.5rem;
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      position: relative; z-index: 1;
+      max-width: 46rem; margin: 0 auto;
+      padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 2.25rem) 2.5rem;
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border-radius: 1.25rem;
-      border: 1px solid rgba(255, 255, 255, 0.75);
-      box-shadow:
-        0 4px 24px rgba(171, 71, 188, 0.08),
-        0 0 0 1px rgba(255, 235, 59, 0.15);
+      border: 1px solid rgba(255,255,255,.75);
+      box-shadow: 0 4px 24px rgba(171,71,188,.08), 0 0 0 1px rgba(255,235,59,.15);
     }
 
-    header {
-      text-align: center;
-      padding-bottom: 2.75rem;
+    /* ── WhatsApp top bar ── */
+    .wa-top {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.65rem; padding: 0.7rem 1.15rem; margin-bottom: 1.25rem;
+      background: linear-gradient(135deg, rgba(255,249,196,.92), rgba(243,229,245,.88));
+      border: 1.5px solid rgba(186,104,200,.25); border-radius: 0.75rem;
+      box-shadow: 0 4px 20px rgba(171,71,188,.08);
+      flex-wrap: wrap; text-align: center;
+    }
+    .wa-top-icon { font-size: 1.4rem; line-height: 1; }
+    .wa-top-number {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.3rem; font-weight: 600; color: var(--mauve-deep); letter-spacing: 0.04em;
+    }
+    .wa-top-link {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.35rem 0.9rem; font-size: 0.8rem; font-weight: 600;
+      letter-spacing: 0.03em; color: #2d6a30;
+      background: linear-gradient(180deg, #e8f5e9, #c8e6c9);
+      border: 1px solid rgba(76,175,80,.4); border-radius: 2rem;
+      text-decoration: none; box-shadow: 0 2px 8px rgba(76,175,80,.18);
+      transition: box-shadow .2s ease, transform .2s ease;
+    }
+    .wa-top-link:hover { box-shadow: 0 4px 14px rgba(76,175,80,.3); transform: translateY(-1px); }
+
+    /* ── Header ── */
+    header { text-align: center; padding-bottom: 1rem; }
+    .brand { display: flex; flex-direction: column; align-items: center; }
+    .brand-logo { margin: 0; line-height: 0; }
+    .brand-logo img {
+      width: min(100%, 20rem); height: auto; display: block; margin: 0 auto;
+      filter: drop-shadow(0 4px 24px rgba(123,31,162,.14));
+    }
+    .tagline {
+      margin: 0.5rem 0 0;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.05rem; font-style: italic; font-weight: 400;
+      color: var(--mauve-deep); letter-spacing: 0.02em;
+    }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex; gap: 0; margin-top: 1.25rem;
       border-bottom: 2px solid transparent;
       border-image: linear-gradient(90deg, var(--sun-rich), var(--mauve-light), var(--sun-rich)) 1;
     }
-
-    .brand {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.15rem;
-    }
-
-    .brand-logo {
-      margin: 0;
-      line-height: 0;
-    }
-
-    .brand-logo img {
-      width: min(100%, 22rem);
-      height: auto;
-      display: block;
-      margin: 0 auto;
-      filter: drop-shadow(0 4px 24px rgba(123, 31, 162, 0.14));
-    }
-
-    .mark {
+    .tab-btn {
+      flex: 1; padding: 0.65rem 0.5rem;
       font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: clamp(2.25rem, 6.5vw, 3.25rem);
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      background: linear-gradient(120deg, var(--mauve-deep) 0%, #4a148c 35%, var(--gold-deep) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
+      font-size: 1.05rem; font-weight: 600; letter-spacing: 0.03em;
+      color: var(--muted); background: none; border: none;
+      cursor: pointer; position: relative;
+      transition: color .2s ease;
+    }
+    .tab-btn:hover { color: var(--mauve-deep); }
+    .tab-btn.active {
       color: var(--mauve-deep);
-      -webkit-text-fill-color: transparent;
-      line-height: 1.05;
-      text-transform: none;
+    }
+    .tab-btn.active::after {
+      content: ""; position: absolute; bottom: -2px; left: 15%; right: 15%;
+      height: 3px; border-radius: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--mauve-rich));
     }
 
-    @supports not (background-clip: text) {
-      .mark {
-        color: var(--mauve-deep);
-        -webkit-text-fill-color: var(--mauve-deep);
-      }
-    }
+    .tab-panel { display: none; padding-top: 1.25rem; animation: fadeTab .3s ease; }
+    .tab-panel.active { display: block; }
+    @keyframes fadeTab { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    .mark-accent {
-      display: block;
-      font-size: 0.42em;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      background: none;
-      -webkit-text-fill-color: var(--mauve-rich);
-      color: var(--mauve-rich);
-      margin-top: 0.5rem;
-      padding-top: 0.65rem;
-      border-top: 2px solid transparent;
-      border-image: linear-gradient(90deg, var(--sun-rich), var(--mauve)) 1;
-      max-width: 13rem;
-    }
-
-    .tagline {
-      margin: 1.35rem 0 0;
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 1.2rem;
-      font-style: italic;
-      font-weight: 400;
-      color: var(--mauve-deep);
-      letter-spacing: 0.02em;
-    }
-
-    .hope {
-      margin-top: 2rem;
-      padding: 1.35rem 1.6rem;
-      background: linear-gradient(135deg, rgba(255, 249, 196, 0.95) 0%, rgba(255, 255, 255, 0.92) 45%, rgba(243, 229, 245, 0.95) 100%);
-      border-radius: 0.75rem;
-      border: 2px solid rgba(255, 213, 79, 0.85);
-      box-shadow:
-        0 0 0 1px rgba(186, 104, 200, 0.25),
-        0 16px 48px rgba(171, 71, 188, 0.12);
-      font-size: 0.98rem;
-      color: var(--ink);
-      text-align: left;
-    }
-
-    section {
-      margin-top: 2.75rem;
-    }
-
+    /* ── Typography ── */
     h2 {
       font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--mauve-deep);
-      margin: 0 0 1.1rem;
-      letter-spacing: 0.03em;
+      font-size: 1.35rem; font-weight: 600; color: var(--mauve-deep);
+      margin: 0 0 0.65rem; letter-spacing: 0.03em;
     }
-
     h3 {
       font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--mauve-deep);
-      margin: 1.5rem 0 0.65rem;
-      letter-spacing: 0.03em;
+      font-size: 1.1rem; font-weight: 600; color: var(--mauve-deep);
+      margin: 0.75rem 0 0.35rem; letter-spacing: 0.03em;
     }
+    p { margin: 0 0 0.75rem; color: var(--muted); }
+    p:last-child { margin-bottom: 0; }
+    .lead { font-size: 1.02rem; color: var(--ink); font-weight: 400; }
 
-    p {
-      margin: 0 0 1.1rem;
-      color: var(--muted);
-    }
-
-    p:last-child {
-      margin-bottom: 0;
-    }
-
-    .lead {
-      font-size: 1.125rem;
-      color: var(--ink);
-      font-weight: 400;
-    }
-
-    .services {
-      display: grid;
-      gap: 1.35rem;
-    }
-
+    /* ── Service cards ── */
+    .services { display: grid; gap: 0.85rem; }
     .card {
-      padding: 1.5rem 1.6rem;
-      border-radius: 0.75rem;
+      padding: 1rem 1.25rem; border-radius: 0.75rem;
       border: 2px solid transparent;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform .2s ease, box-shadow .2s ease;
     }
-
-    .card:nth-child(1) {
-      background: linear-gradient(145deg, rgba(255, 249, 196, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
-      border-color: rgba(255, 193, 7, 0.55);
-      box-shadow: 0 8px 28px rgba(255, 193, 7, 0.2);
-    }
-
-    .card:nth-child(2) {
-      background: linear-gradient(145deg, rgba(252, 228, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
-      border-color: rgba(186, 104, 200, 0.45);
-      box-shadow: 0 8px 28px rgba(171, 71, 188, 0.15);
-    }
-
-    .card:nth-child(3) {
-      background: linear-gradient(145deg, rgba(255, 249, 196, 0.5) 0%, rgba(243, 229, 245, 0.9) 100%);
-      border-color: rgba(255, 193, 7, 0.4);
-      box-shadow: 0 8px 28px rgba(142, 36, 170, 0.12);
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(255, 193, 7, 0.2);
-    }
-
-    .card:nth-child(2):hover {
-      box-shadow: 0 12px 36px rgba(171, 71, 188, 0.22);
-    }
-
-    .card:nth-child(3):hover {
-      box-shadow: 0 12px 36px rgba(171, 71, 188, 0.18);
-    }
-
-    .card h3 {
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 1.28rem;
-      font-weight: 600;
-      margin: 0 0 0.55rem;
-      color: var(--mauve-deep);
-      letter-spacing: 0.02em;
-    }
-
-    .card p {
-      font-size: 0.98rem;
-      line-height: 1.68;
-    }
-
+    .card:nth-child(1) { background: linear-gradient(145deg, rgba(255,249,196,.98), rgba(255,255,255,.95)); border-color: rgba(255,193,7,.55); box-shadow: 0 4px 16px rgba(255,193,7,.12); }
+    .card:nth-child(2) { background: linear-gradient(145deg, rgba(252,228,255,.98), rgba(255,255,255,.95)); border-color: rgba(186,104,200,.45); box-shadow: 0 4px 16px rgba(171,71,188,.1); }
+    .card:nth-child(3) { background: linear-gradient(145deg, rgba(255,249,196,.5), rgba(243,229,245,.9)); border-color: rgba(255,193,7,.4); box-shadow: 0 4px 16px rgba(142,36,170,.08); }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,193,7,.2); }
+    .card h3 { font-size: 1.15rem; margin: 0 0 0.25rem; }
+    .card p { font-size: 0.9rem; line-height: 1.55; margin: 0; }
     .card-icon {
-      float: left;
-      width: 2.5rem;
-      height: 2.5rem;
-      margin: 0 0.9rem 0.5rem 0;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.05rem;
-      color: var(--midnight);
+      float: left; width: 2rem; height: 2rem; margin: 0 0.65rem 0.3rem 0;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; color: var(--midnight);
     }
+    .card-icon.tarot { background: linear-gradient(145deg, var(--sun), var(--gold)); box-shadow: 0 2px 6px rgba(255,193,7,.45); }
+    .card-icon.vedic { background: linear-gradient(145deg, var(--mauve-light), var(--mauve)); box-shadow: 0 2px 6px rgba(171,71,188,.3); }
+    .card-icon.nadi { background: linear-gradient(145deg, var(--sun-rich), var(--mauve-light)); box-shadow: 0 2px 6px rgba(255,193,7,.3); }
+    .card::after { content: ""; display: table; clear: both; }
 
-    .card-icon.tarot {
-      background: linear-gradient(145deg, var(--sun), var(--gold));
-      box-shadow: 0 2px 8px rgba(255, 193, 7, 0.5);
+    /* ── Pricing tiers ── */
+    .pricing-grid { display: grid; gap: 0.85rem; }
+    .tier {
+      padding: 1rem 1.25rem; border-radius: 0.75rem;
+      border: 2px solid transparent;
+      transition: transform .2s ease, box-shadow .2s ease;
     }
-
-    .card-icon.vedic {
-      background: linear-gradient(145deg, var(--mauve-light), var(--mauve));
-      box-shadow: 0 2px 8px rgba(171, 71, 188, 0.35);
+    .tier:hover { transform: translateY(-2px); }
+    .tier:nth-child(1) { background: linear-gradient(145deg, rgba(255,249,196,.95), rgba(255,255,255,.92)); border-color: rgba(255,193,7,.45); box-shadow: 0 4px 16px rgba(255,193,7,.1); }
+    .tier:nth-child(2) { background: linear-gradient(145deg, rgba(252,228,255,.95), rgba(255,255,255,.92)); border-color: rgba(186,104,200,.4); box-shadow: 0 4px 16px rgba(171,71,188,.08); }
+    .tier:nth-child(3) { background: linear-gradient(145deg, rgba(255,249,196,.5), rgba(243,229,245,.9)); border-color: rgba(171,71,188,.35); box-shadow: 0 4px 16px rgba(142,36,170,.08); }
+    .tier-header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.2rem; }
+    .tier-name { font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.15rem; font-weight: 600; color: var(--mauve-deep); margin: 0; }
+    .tier-price { font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.05rem; font-weight: 700; color: var(--gold-deep); }
+    .tier-details { margin: 0; font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+    .tier-badge {
+      display: inline-block; padding: 0.1rem 0.5rem; font-size: 0.65rem;
+      font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      border-radius: 1rem; margin-left: 0.35rem; vertical-align: middle;
     }
+    .tier:nth-child(2) .tier-badge { background: linear-gradient(135deg, var(--mauve-light), var(--mauve)); color: #fff; }
+    .tier:nth-child(3) .tier-badge { background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color: #3e2723; }
 
-    .card-icon.nadi {
-      background: linear-gradient(145deg, var(--sun-rich), var(--mauve-light));
-      box-shadow: 0 2px 8px rgba(255, 193, 7, 0.35);
+    /* ── Payment modes ── */
+    .payment-section {
+      margin-top: 1rem; padding: 1rem 1.25rem;
+      background: linear-gradient(135deg, rgba(255,255,255,.9), rgba(243,229,245,.5));
+      border: 1.5px solid rgba(186,104,200,.18); border-radius: 0.75rem;
     }
-
-    .card::after {
-      content: "";
-      display: table;
-      clear: both;
+    .payment-section h3 { margin-top: 0; font-size: 1rem; }
+    .payment-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.4rem; }
+    @media (max-width: 480px) { .payment-cols { grid-template-columns: 1fr; gap: 0.5rem; } }
+    .payment-region { font-size: 0.86rem; }
+    .payment-region strong {
+      display: block; font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 0.95rem; font-weight: 600; color: var(--mauve-deep); margin-bottom: 0.2rem;
     }
+    .payment-list { list-style: none; padding: 0; margin: 0; color: var(--muted); }
+    .payment-list li { padding: 0.1rem 0; }
+    .payment-list li::before { content: "\00b7"; margin-right: 0.4rem; color: var(--mauve); font-weight: 700; }
 
-    .cta {
-      margin-top: 3rem;
-      padding: 2rem 1.75rem;
-      text-align: center;
-      background: linear-gradient(155deg, rgba(255, 241, 118, 0.95) 0%, rgba(255, 255, 255, 0.88) 40%, rgba(233, 196, 255, 0.75) 100%);
-      border: 2px solid rgba(255, 213, 79, 0.7);
-      border-radius: 0.85rem;
-      box-shadow:
-        0 0 0 1px rgba(186, 104, 200, 0.2),
-        0 20px 50px rgba(171, 71, 188, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    /* ── Book CTA (inside sessions tab) ── */
+    .book-cta {
+      margin-top: 1.25rem; padding: 1rem; text-align: center;
+      background: linear-gradient(155deg, rgba(255,241,118,.92), rgba(255,255,255,.85) 40%, rgba(233,196,255,.7));
+      border: 2px solid rgba(255,213,79,.6); border-radius: 0.75rem;
+      box-shadow: 0 0 0 1px rgba(186,104,200,.15), 0 8px 24px rgba(171,71,188,.08);
     }
-
-    .cta p {
-      margin-bottom: 1.35rem;
-      font-size: 0.95rem;
-    }
-
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      justify-content: center;
-    }
-
+    .book-cta p { margin: 0 0 0.65rem; font-size: 0.92rem; }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 2.75rem;
-      padding: 0.6rem 1.4rem;
-      font-family: inherit;
-      font-size: 0.9rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      text-decoration: none;
-      border-radius: 2px;
-      border: 1px solid transparent;
-      cursor: default;
-      opacity: 0.9;
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 2.5rem; padding: 0.5rem 1.3rem;
+      font-family: inherit; font-size: 0.86rem; font-weight: 600;
+      letter-spacing: 0.02em; text-decoration: none;
+      border-radius: 3px; border: 1px solid transparent; cursor: pointer;
     }
-
-    a.btn {
-      cursor: pointer;
-      opacity: 1;
-    }
-
-    a.btn:hover {
-      filter: brightness(1.03);
-      box-shadow: 0 6px 18px rgba(171, 71, 188, 0.25);
-    }
-
+    .btn:hover { filter: brightness(1.04); box-shadow: 0 6px 18px rgba(171,71,188,.22); }
     .btn-primary {
       background: linear-gradient(180deg, #ffeb3b, #ffc107);
-      color: #3e2723;
-      border-color: rgba(245, 127, 23, 0.5);
-      box-shadow: 0 4px 14px rgba(255, 193, 7, 0.45);
+      color: #3e2723; border-color: rgba(245,127,23,.5);
+      box-shadow: 0 3px 12px rgba(255,193,7,.4);
     }
 
-    .btn-secondary {
-      background: linear-gradient(180deg, #f3e5f5, #e1bee7);
-      color: var(--mauve-deep);
-      border-color: rgba(171, 71, 188, 0.45);
-      box-shadow: 0 4px 14px rgba(171, 71, 188, 0.2);
-    }
-
-    .btn-note {
-      display: block;
-      margin-top: 0.85rem;
-      font-size: 0.8rem;
-      color: var(--muted);
-      font-style: italic;
-    }
-
+    /* ── Footer ── */
     footer {
-      margin-top: 3.25rem;
-      padding-top: 1.75rem;
+      margin-top: 1.5rem; padding-top: 1rem;
       border-top: 2px solid transparent;
       border-image: linear-gradient(90deg, var(--mauve-light), var(--sun-rich), var(--mauve-light)) 1;
-      text-align: center;
-      font-size: 0.82rem;
-      color: var(--mauve-deep);
-      letter-spacing: 0.04em;
+      text-align: center; font-size: 0.8rem; color: var(--mauve-deep); letter-spacing: 0.04em;
     }
-
-    footer em {
-      color: var(--mauve-rich);
-      font-style: normal;
-      font-weight: 600;
-    }
-
-    .footer-contact {
-      margin: 0 0 1rem;
-      font-size: 0.92rem;
-      line-height: 1.6;
-    }
-
+    footer em { color: var(--mauve-rich); font-style: normal; font-weight: 600; }
     .footer-wa-link {
-      color: var(--mauve-rich);
-      font-weight: 600;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(171, 71, 188, 0.35);
+      color: var(--mauve-rich); font-weight: 600; text-decoration: none;
+      border-bottom: 1px solid rgba(171,71,188,.35);
     }
-
-    .footer-wa-link:hover {
-      border-bottom-color: var(--mauve-deep);
-      color: var(--mauve-deep);
-    }
-
-    .expect-list {
-      margin: 0.75rem 0 0;
-      padding-left: 1.25rem;
-      color: var(--muted);
-    }
-
-    .expect-list li {
-      margin-bottom: 0.45rem;
-    }
-
-    .expect-list li:last-child {
-      margin-bottom: 0;
-    }
+    .footer-wa-link:hover { border-bottom-color: var(--mauve-deep); color: var(--mauve-deep); }
   </style>
 </head>
 <body>
   <div class="bg-floral" aria-hidden="true"></div>
   <div class="wrap">
+
+    <div class="wa-top">
+      <span class="wa-top-icon" aria-hidden="true">&#x1F4AC;</span>
+      <span class="wa-top-number">+1 248-222-9242</span>
+      <a href="https://api.whatsapp.com/send?phone=12482229242" class="wa-top-link" target="_blank" rel="noopener noreferrer">Message on WhatsApp</a>
+    </div>
+
     <header>
       <div class="brand">
         <h1 class="brand-logo">
-          <img
-            src="assets/bright-life-astrology-logo.png"
-            alt="Bright Life Astrology"
-            width="352"
-          />
+          <img src="assets/bright-life-astrology-logo.png" alt="Bright Life Astrology" width="352" />
         </h1>
       </div>
-      <p class="tagline">Tarot · Vedic astrology · Bhrigu Nandi Nadi</p>
-      <p class="hope">
-        A bright life is not one without shadow: it is one seen clearly. <strong>Bright Life Astrology</strong> is an old soul’s practice: wisdom earned in ordinary life, offered without theatrics. I’ve walked the corporate tech world and kept returning to the same questions (<em>why now, what pattern, what matters</em>), the spiritual thread behind the schedule. Here, Tarot, Jyotish, and Nadi are not about fixing you or replacing your agency; they help worry loosen a little, timing come into view, and your next step feel steadier. Clarity, in that sense, is a kind of light.
-      </p>
+      <p class="tagline">Tarot &middot; Vedic astrology &middot; Bhrigu Nandi Nadi</p>
     </header>
 
-    <section aria-labelledby="about-heading">
-      <h2 id="about-heading">About me</h2>
+    <nav class="tabs" role="tablist">
+      <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-about" id="tab-about">About</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-offerings" id="tab-offerings">Offerings</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-sessions" id="tab-sessions">Sessions &amp; Pricing</button>
+    </nav>
+
+    <!-- ── Tab: About ── -->
+    <div class="tab-panel active" id="panel-about" role="tabpanel" aria-labelledby="tab-about">
+      <h2>About me</h2>
       <p class="lead">
-        I bring a reader’s patience and a seeker’s habit: always inclined toward the spiritual, always looking for reasons that hold. Clients come with real questions: love, work, family, change, what comes next. In session we don’t nail down a fixed fate; we trace coherence: how this chapter rhymes with the longer story, so fear can ease and hope can find room.
+        A bright life is not one without shadow &mdash; it is one seen clearly.
       </p>
       <p>
-        Tarot speaks in images; Jyotish reads the sky you were born beneath; Bhrigu Nandi Nadi, where it fits, carries the thread of pattern in the lineage of the sages. The work stays grounded: luminous enough to see by, humble enough to trust your own choices.
+        <strong>Bright Life Astrology</strong> is an old soul&rsquo;s practice: wisdom earned in ordinary life, offered without theatrics. I&rsquo;ve walked the corporate tech world and kept returning to the same questions &mdash; <em>why now, what pattern, what matters</em> &mdash; the spiritual thread behind the schedule.
       </p>
-      <h3 id="expect-heading">What you can expect</h3>
-      <ul class="expect-list" aria-labelledby="expect-heading">
-        <li>Respect for your agency: insight that sharpens how you listen, not commands from on high.</li>
-        <li>Language that’s clear and warm; no performance, no fear-mongering.</li>
-        <li>Room for the quiet assurance many people still need to hear: <strong>it can be alright</strong> (not always on our timetable; still, alright).</li>
-      </ul>
-    </section>
+      <p>
+        Clients come with real questions about love, work, family, and what comes next. In session we don&rsquo;t nail down a fixed fate; we trace coherence: how this chapter rhymes with the longer story, so fear can ease and hope can find room.
+      </p>
+      <p>
+        Tarot speaks in images; Jyotish reads the sky you were born beneath; Bhrigu Nandi Nadi carries the thread of pattern in the lineage of the sages. The work stays grounded: luminous enough to see by, humble enough to trust your own choices.
+      </p>
+      <p>
+        Healing and right timing often arrive quietly, after honesty, rest, and one brave step. The light here does not demand perfection &mdash; it asks for truth. That&rsquo;s the spirit of this work: precision with warmth, and space for you to move in your own time.
+      </p>
+    </div>
 
-    <section aria-labelledby="services-heading">
-      <h2 id="services-heading">Offerings</h2>
+    <!-- ── Tab: Offerings ── -->
+    <div class="tab-panel" id="panel-offerings" role="tabpanel" aria-labelledby="tab-offerings">
+      <h2>Offerings</h2>
       <div class="services">
         <article class="card">
-          <div class="card-icon tarot" aria-hidden="true">✦</div>
+          <div class="card-icon tarot" aria-hidden="true">&#x2726;</div>
           <h3>Tarot</h3>
-          <p>
-            Readings that stay close to what is moving within you and around you. The cards name patterns and openings so your choices can be deliberate: informed by intuition, not driven by noise.
-          </p>
+          <p>Patterns and openings so your choices can be deliberate: informed by intuition, not driven by noise.</p>
         </article>
         <article class="card">
-          <div class="card-icon vedic" aria-hidden="true">☉</div>
+          <div class="card-icon vedic" aria-hidden="true">&#x2609;</div>
           <h3>Vedic astrology (Jyotish)</h3>
-          <p>
-            Sidereal chart work: strengths, stretches of effort, and windows that favour action or patience. Suited to timing, relationship dynamics, and the recurring “why now” beneath the surface of events.
-          </p>
+          <p>Timing, relationship dynamics, and the recurring &ldquo;why now&rdquo; beneath the surface of events.</p>
         </article>
         <article class="card">
-          <div class="card-icon nadi" aria-hidden="true">◇</div>
+          <div class="card-icon nadi" aria-hidden="true">&#x25C7;</div>
           <h3>Bhrigu Nandi Nadi</h3>
-          <p>
-            Consultations in the Nadi stream of Maharishi Bhrigu: karmic themes and life direction held with respect for the tradition. Where it fits, this can deepen perspective on purpose and passage.
-          </p>
+          <p>Karmic themes and life direction in the tradition of Maharishi Bhrigu &mdash; purpose and passage.</p>
         </article>
       </div>
-    </section>
+    </div>
 
-    <section aria-labelledby="peace-heading">
-      <h2 id="peace-heading">Light that lasts</h2>
-      <p>
-        Healing and right timing often arrive quietly, after honesty, rest, and one brave step. The light here does not demand perfection; it asks for truth. That’s the spirit of this work: precision with warmth, and space for you to move in your own time.
-      </p>
-    </section>
-
-    <div class="cta">
-      <p>
-        <strong>Bright Life Astrology</strong>: appointments &amp; offerings<br />
-        Secure payment options are coming soon. Use WhatsApp below to reach me in the meantime.
-      </p>
-      <div class="btn-row">
-        <span class="btn btn-primary" role="button" aria-disabled="true">Pay &amp; book (coming soon)</span>
-        <a
-          href="https://api.whatsapp.com/send?phone=12482229242"
-          class="btn btn-secondary"
-          target="_blank"
-          rel="noopener noreferrer"
-        >Message on WhatsApp</a>
+    <!-- ── Tab: Sessions & Pricing ── -->
+    <div class="tab-panel" id="panel-sessions" role="tabpanel" aria-labelledby="tab-sessions">
+      <h2>Sessions &amp; Pricing</h2>
+      <div class="pricing-grid">
+        <article class="tier">
+          <div class="tier-header">
+            <h3 class="tier-name">Mini Reading</h3>
+            <span class="tier-price">$5 / &#x20B9;399</span>
+          </div>
+          <p class="tier-details">2 questions &mdash; delivered as <strong>voice notes</strong> on WhatsApp.</p>
+        </article>
+        <article class="tier">
+          <div class="tier-header">
+            <h3 class="tier-name">Focus Session <span class="tier-badge">Popular</span></h3>
+            <span class="tier-price">$11 / &#x20B9;999</span>
+          </div>
+          <p class="tier-details">15-minute live session &mdash; one topic, explored deeply.</p>
+        </article>
+        <article class="tier">
+          <div class="tier-header">
+            <h3 class="tier-name">Deep Reading <span class="tier-badge">Comprehensive</span></h3>
+            <span class="tier-price">$21 / &#x20B9;1,799</span>
+          </div>
+          <p class="tier-details">30-minute in-depth session &mdash; full chart reading, multiple questions.</p>
+        </article>
       </div>
-      <span class="btn-note">Payment and scheduling in one flow will be added here when ready.</span>
+
+      <div class="payment-section">
+        <h3>Payment Options</h3>
+        <div class="payment-cols">
+          <div class="payment-region">
+            <strong>India</strong>
+            <ul class="payment-list">
+              <li>Bank Transfer (details shared on WhatsApp)</li>
+            </ul>
+          </div>
+          <div class="payment-region">
+            <strong>United States</strong>
+            <ul class="payment-list">
+              <li>Zelle</li>
+              <li>Venmo</li>
+              <li>Cash App</li>
+              <li>Apple Pay</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="book-cta">
+        <p><strong>Ready to begin?</strong> Message on WhatsApp to book your session.</p>
+        <a href="https://api.whatsapp.com/send?phone=12482229242" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Book on WhatsApp</a>
+      </div>
     </div>
 
     <footer>
-      <p class="footer-contact">
-        <a
-          class="footer-wa-link"
-          href="https://api.whatsapp.com/send?phone=12482229242"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Open WhatsApp chat for US number plus one 248-222-9242"
-        >WhatsApp (US +1) 248-222-9242</a>
+      <p>
+        <a class="footer-wa-link" href="https://api.whatsapp.com/send?phone=12482229242" target="_blank" rel="noopener noreferrer">WhatsApp (US +1) 248-222-9242</a>
       </p>
-      <p><em>Bright Life Astrology</em> · with care and clarity</p>
+      <p><em>Bright Life Astrology</em> &middot; precision with warmth</p>
     </footer>
+
   </div>
+
+  <script>
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(function(b) {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        document.querySelectorAll('.tab-panel').forEach(function(p) {
+          p.classList.remove('active');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        document.getElementById(btn.getAttribute('aria-controls')).classList.add('active');
+      });
+    });
+  </script>
 </body>
 </html>
