@@ -8,7 +8,7 @@
   <title>Bright Life Astrology &middot; Tarot &amp; Jyotish Consultations</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
   <style>
     :root {
       --lemon: #fffef5; --butter: #fff9c4; --sun: #fff176;
@@ -74,6 +74,37 @@
       transition: box-shadow .2s ease, transform .2s ease;
     }
     .wa-top-link:hover { box-shadow: 0 4px 14px rgba(76,175,80,.3); transform: translateY(-1px); }
+
+    /* ── Language switch ── */
+    .language-row {
+      display: flex; justify-content: flex-end; margin-bottom: 0.65rem;
+    }
+    .language-switch {
+      display: inline-flex; padding: 0.2rem;
+      background: rgba(255,255,255,.76);
+      border: 1px solid rgba(171,71,188,.25); border-radius: 2rem;
+      box-shadow: 0 2px 10px rgba(123,31,162,.08);
+    }
+    .language-btn {
+      min-width: 3.2rem; padding: 0.3rem 0.75rem;
+      font: inherit; font-size: 0.78rem; font-weight: 600;
+      color: var(--muted); background: transparent; border: 0;
+      border-radius: 2rem; cursor: pointer;
+    }
+    .language-btn.active {
+      color: #3e2723;
+      background: linear-gradient(135deg, var(--sun-rich), var(--mauve-light));
+      box-shadow: 0 2px 7px rgba(171,71,188,.16);
+    }
+    html[lang="hi"] body { font-family: "Noto Sans Devanagari", "Source Sans 3", sans-serif; }
+    html[lang="hi"] h2,
+    html[lang="hi"] h3,
+    html[lang="hi"] .tab-btn,
+    html[lang="hi"] .tier-name,
+    html[lang="hi"] .tier-price,
+    html[lang="hi"] .payment-region strong {
+      font-family: "Noto Sans Devanagari", "Source Sans 3", sans-serif;
+    }
 
     /* ── Header ── */
     header { text-align: center; padding-bottom: 1rem; }
@@ -247,10 +278,17 @@
   <div class="bg-floral" aria-hidden="true"></div>
   <div class="wrap">
 
+    <div class="language-row">
+      <div class="language-switch" role="group" aria-label="Choose language">
+        <button class="language-btn active" type="button" data-lang="en" aria-pressed="true">English</button>
+        <button class="language-btn" type="button" data-lang="hi" aria-pressed="false">हिंदी</button>
+      </div>
+    </div>
+
     <div class="wa-top">
       <span class="wa-top-icon" aria-hidden="true">&#x1F4AC;</span>
       <span class="wa-top-number">+1 248-222-9242</span>
-      <a href="https://api.whatsapp.com/send?phone=12482229242" class="wa-top-link" target="_blank" rel="noopener noreferrer">Message on WhatsApp</a>
+      <a href="https://api.whatsapp.com/send?phone=12482229242" class="wa-top-link" target="_blank" rel="noopener noreferrer" data-i18n="messageWhatsApp">Message on WhatsApp</a>
     </div>
 
     <header>
@@ -259,72 +297,72 @@
           <img src="assets/bright-life-astrology-logo.png" alt="Bright Life Astrology" width="352" />
         </h1>
       </div>
-      <p class="tagline">Tarot &middot; Vedic astrology &middot; Bhrigu Nandi Nadi</p>
+      <p class="tagline" data-i18n="tagline">Tarot &middot; Vedic astrology &middot; Bhrigu Nandi Nadi</p>
     </header>
 
     <nav class="tabs" role="tablist">
-      <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-about" id="tab-about">About</button>
-      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-sessions" id="tab-sessions">Sessions &amp; Pricing</button>
+      <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-about" id="tab-about" data-i18n="tabAbout">About</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-sessions" id="tab-sessions" data-i18n="tabSessions">Sessions &amp; Pricing</button>
     </nav>
 
     <!-- ── Tab: About ── -->
     <div class="tab-panel active" id="panel-about" role="tabpanel" aria-labelledby="tab-about">
-      <h2>About me</h2>
-      <p class="lead">
+      <h2 data-i18n="aboutHeading">About me</h2>
+      <p class="lead" data-i18n="aboutLead">
         A bright life is not one without shadow &mdash; it is one seen clearly.
       </p>
-      <p>
+      <p data-i18n="aboutOne">
         <strong>Bright Life Astrology</strong> is an old soul&rsquo;s practice: wisdom earned in ordinary life, offered without theatrics. I&rsquo;ve walked the corporate tech world and kept returning to the same questions &mdash; <em>why now, what pattern, what matters</em> &mdash; the spiritual thread behind the schedule.
       </p>
-      <p>
+      <p data-i18n="aboutTwo">
         Clients come with real questions about love, work, family, and what comes next. In session we don&rsquo;t nail down a fixed fate; we trace coherence: how this chapter rhymes with the longer story, so fear can ease and hope can find room.
       </p>
-      <p>
+      <p data-i18n="aboutThree">
         <strong>Tarot</strong> speaks in images; <strong>Jyotish</strong> reads the sky you were born beneath; <strong>Bhrigu Nandi Nadi</strong> carries the thread of pattern in the lineage of the sages. The work stays grounded: luminous enough to see by, humble enough to trust your own choices.
       </p>
-      <p>
+      <p data-i18n="aboutFour">
         Healing and right timing often arrive quietly, after honesty, rest, and one brave step. The light here does not demand perfection &mdash; it asks for truth. That&rsquo;s the spirit of this work: precision with warmth, and space for you to move in your own time.
       </p>
     </div>
 
     <!-- ── Tab: Sessions & Pricing ── -->
     <div class="tab-panel" id="panel-sessions" role="tabpanel" aria-labelledby="tab-sessions">
-      <h2>Sessions &amp; Pricing</h2>
+      <h2 data-i18n="sessionsHeading">Sessions &amp; Pricing</h2>
       <div class="pricing-grid">
         <article class="tier">
           <div class="tier-header">
-            <h3 class="tier-name">Mini Reading</h3>
+            <h3 class="tier-name" data-i18n="miniName">Mini Reading</h3>
             <span class="tier-price">$5 / &#x20B9;399</span>
           </div>
-          <p class="tier-details">2 questions &mdash; delivered as <strong>voice notes</strong> on WhatsApp.</p>
+          <p class="tier-details" data-i18n="miniDetails">2 questions &mdash; delivered as <strong>voice notes</strong> on WhatsApp.</p>
         </article>
         <article class="tier">
           <div class="tier-header">
-            <h3 class="tier-name">Focus Session <span class="tier-badge">Popular</span></h3>
+            <h3 class="tier-name" data-i18n="focusName">Focus Session <span class="tier-badge">Popular</span></h3>
             <span class="tier-price">$11 / &#x20B9;999</span>
           </div>
-          <p class="tier-details">15-minute live session &mdash; one topic, explored deeply.</p>
+          <p class="tier-details" data-i18n="focusDetails">15-minute live session &mdash; one topic, explored deeply.</p>
         </article>
         <article class="tier">
           <div class="tier-header">
-            <h3 class="tier-name">Deep Reading <span class="tier-badge">Comprehensive</span></h3>
+            <h3 class="tier-name" data-i18n="deepName">Deep Reading <span class="tier-badge">Comprehensive</span></h3>
             <span class="tier-price">$21 / &#x20B9;1,799</span>
           </div>
-          <p class="tier-details">30-minute in-depth session &mdash; full chart reading, multiple questions.</p>
+          <p class="tier-details" data-i18n="deepDetails">30-minute in-depth session &mdash; full chart reading, multiple questions.</p>
         </article>
       </div>
 
       <div class="payment-section">
-        <h3>Payment Options <span style="font-weight:400; font-size:0.92em; color:var(--muted); font-style:italic;">(details shared on WhatsApp)</span></h3>
+        <h3 data-i18n="paymentHeading">Payment Options <span style="font-weight:400; font-size:0.92em; color:var(--muted); font-style:italic;">(details shared on WhatsApp)</span></h3>
         <div class="payment-cols">
           <div class="payment-region">
-            <strong>India</strong>
+            <strong data-i18n="india">India</strong>
             <ul class="payment-list">
-              <li>Bank Transfer</li>
+              <li data-i18n="bankTransfer">Bank Transfer</li>
             </ul>
           </div>
           <div class="payment-region">
-            <strong>United States</strong>
+            <strong data-i18n="unitedStates">United States</strong>
             <ul class="payment-list">
               <li>Zelle</li>
               <li>Venmo</li>
@@ -336,21 +374,111 @@
       </div>
 
       <div class="book-cta">
-        <p><strong>Ready to begin?</strong> Message on WhatsApp to book your session.</p>
-        <a href="https://api.whatsapp.com/send?phone=12482229242" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Book on WhatsApp</a>
+        <p data-i18n="ready"><strong>Ready to begin?</strong> Message on WhatsApp to book your session.</p>
+        <a href="https://api.whatsapp.com/send?phone=12482229242" class="btn btn-primary" target="_blank" rel="noopener noreferrer" data-i18n="bookWhatsApp">Book on WhatsApp</a>
       </div>
     </div>
 
     <footer>
       <p>
-        <a class="footer-wa-link" href="https://api.whatsapp.com/send?phone=12482229242" target="_blank" rel="noopener noreferrer">WhatsApp (US +1) 248-222-9242</a>
+        <a class="footer-wa-link" href="https://api.whatsapp.com/send?phone=12482229242" target="_blank" rel="noopener noreferrer" data-i18n="footerWhatsApp">WhatsApp (US +1) 248-222-9242</a>
       </p>
-      <p><em>Bright Life Astrology</em> &middot; precision with warmth</p>
+      <p data-i18n="footerTagline"><em>Bright Life Astrology</em> &middot; precision with warmth</p>
     </footer>
 
   </div>
 
   <script>
+    const translations = {
+      en: {
+        title: "Bright Life Astrology · Tarot & Jyotish Consultations",
+        description: "Bright Life Astrology · Tarot, Vedic Jyotish & Bhrigu Nandi Nadi. An old soul with a tech background; readings with warmth, clarity, and room for your agency. WhatsApp +1 248-222-9242 (US).",
+        messageWhatsApp: "Message on WhatsApp",
+        tagline: "Tarot · Vedic astrology · Bhrigu Nandi Nadi",
+        tabAbout: "About",
+        tabSessions: "Sessions & Pricing",
+        aboutHeading: "About me",
+        aboutLead: "A bright life is not one without shadow — it is one seen clearly.",
+        aboutOne: "<strong>Bright Life Astrology</strong> is an old soul’s practice: wisdom earned in ordinary life, offered without theatrics. I’ve walked the corporate tech world and kept returning to the same questions — <em>why now, what pattern, what matters</em> — the spiritual thread behind the schedule.",
+        aboutTwo: "Clients come with real questions about love, work, family, and what comes next. In session we don’t nail down a fixed fate; we trace coherence: how this chapter rhymes with the longer story, so fear can ease and hope can find room.",
+        aboutThree: "<strong>Tarot</strong> speaks in images; <strong>Jyotish</strong> reads the sky you were born beneath; <strong>Bhrigu Nandi Nadi</strong> carries the thread of pattern in the lineage of the sages. The work stays grounded: luminous enough to see by, humble enough to trust your own choices.",
+        aboutFour: "Healing and right timing often arrive quietly, after honesty, rest, and one brave step. The light here does not demand perfection — it asks for truth. That’s the spirit of this work: precision with warmth, and space for you to move in your own time.",
+        sessionsHeading: "Sessions & Pricing",
+        miniName: "Mini Reading",
+        miniDetails: "2 questions — delivered as <strong>voice notes</strong> on WhatsApp.",
+        focusName: "Focus Session <span class=\"tier-badge\">Popular</span>",
+        focusDetails: "15-minute live session — one topic, explored deeply.",
+        deepName: "Deep Reading <span class=\"tier-badge\">Comprehensive</span>",
+        deepDetails: "30-minute in-depth session — full chart reading, multiple questions.",
+        paymentHeading: "Payment Options <span style=\"font-weight:400; font-size:0.92em; color:var(--muted); font-style:italic;\">(details shared on WhatsApp)</span>",
+        india: "India",
+        bankTransfer: "Bank Transfer",
+        unitedStates: "United States",
+        ready: "<strong>Ready to begin?</strong> Message on WhatsApp to book your session.",
+        bookWhatsApp: "Book on WhatsApp",
+        footerWhatsApp: "WhatsApp (US +1) 248-222-9242",
+        footerTagline: "<em>Bright Life Astrology</em> · precision with warmth"
+      },
+      hi: {
+        title: "ब्राइट लाइफ़ एस्ट्रोलॉजी · टैरो और ज्योतिष परामर्श",
+        description: "ब्राइट लाइफ़ एस्ट्रोलॉजी — टैरो, वैदिक ज्योतिष और भृगु नंदी नाड़ी परामर्श। आत्मीयता, स्पष्टता और आपके स्वतंत्र निर्णय का सम्मान।",
+        messageWhatsApp: "WhatsApp पर संदेश भेजें",
+        tagline: "टैरो · वैदिक ज्योतिष · भृगु नंदी नाड़ी",
+        tabAbout: "परिचय",
+        tabSessions: "रीडिंग और शुल्क",
+        aboutHeading: "मेरे बारे में",
+        aboutLead: "उज्ज्वल जीवन वह नहीं जिसमें कोई छाया न हो — बल्कि वह है जिसे स्पष्टता से देखा जाए।",
+        aboutOne: "<strong>Bright Life Astrology</strong> एक अनुभवी आत्मा की साधना है — साधारण जीवन से अर्जित ज्ञान, बिना किसी दिखावे के। मैंने कॉर्पोरेट टेक्नोलॉजी की दुनिया में काम किया है, फिर भी बार-बार उन्हीं प्रश्नों की ओर लौटी: <em>अभी क्यों, कौन-सा पैटर्न, और सच में क्या महत्वपूर्ण है</em> — यानी व्यस्त दिनचर्या के पीछे का आध्यात्मिक सूत्र।",
+        aboutTwo: "लोग प्रेम, कार्य, परिवार और आगे की राह से जुड़े सच्चे प्रश्न लेकर आते हैं। रीडिंग में हम भाग्य को अटल घोषित नहीं करते; हम जीवन के सूत्र जोड़ते हैं — यह अध्याय आपकी बड़ी कहानी से कैसे जुड़ता है — ताकि भय कम हो और आशा के लिए स्थान बने।",
+        aboutThree: "<strong>टैरो</strong> चित्रों और प्रतीकों में बोलता है; <strong>ज्योतिष</strong> आपके जन्म के समय के आकाश को पढ़ता है; <strong>भृगु नंदी नाड़ी</strong> ऋषि परंपरा में कर्म के पैटर्न को समझती है। यह कार्य व्यावहारिक रहता है — राह दिखाने जितना प्रकाशमान और आपके अपने निर्णयों का सम्मान करने जितना विनम्र।",
+        aboutFour: "उपचार और सही समय अक्सर शांत ढंग से आते हैं — ईमानदारी, विश्राम और एक साहसी कदम के बाद। यहाँ का प्रकाश पूर्णता नहीं माँगता; वह सत्य माँगता है। यही इस साधना की भावना है: आत्मीयता के साथ सटीकता, और आपको अपनी गति से आगे बढ़ने की जगह।",
+        sessionsHeading: "रीडिंग और शुल्क",
+        miniName: "मिनी रीडिंग",
+        miniDetails: "2 प्रश्न — WhatsApp पर <strong>वॉइस नोट्स</strong> के रूप में उत्तर।",
+        focusName: "फोकस रीडिंग <span class=\"tier-badge\">लोकप्रिय</span>",
+        focusDetails: "15 मिनट की लाइव रीडिंग — एक विषय पर गहराई से चर्चा।",
+        deepName: "विस्तृत रीडिंग <span class=\"tier-badge\">संपूर्ण</span>",
+        deepDetails: "30 मिनट की विस्तृत रीडिंग — पूरी कुंडली का विश्लेषण और कई प्रश्न।",
+        paymentHeading: "भुगतान के विकल्प <span style=\"font-weight:400; font-size:0.92em; color:var(--muted); font-style:italic;\">(विवरण WhatsApp पर साझा किए जाएँगे)</span>",
+        india: "भारत",
+        bankTransfer: "बैंक ट्रांसफ़र",
+        unitedStates: "संयुक्त राज्य अमेरिका",
+        ready: "<strong>शुरू करने के लिए तैयार हैं?</strong> अपनी रीडिंग बुक करने के लिए WhatsApp पर संदेश भेजें।",
+        bookWhatsApp: "WhatsApp पर बुक करें",
+        footerWhatsApp: "WhatsApp (अमेरिका +1) 248-222-9242",
+        footerTagline: "<em>Bright Life Astrology</em> · आत्मीयता के साथ सटीकता"
+      }
+    };
+
+    function setLanguage(language) {
+      const lang = translations[language] ? language : "en";
+      document.documentElement.lang = lang;
+      document.title = translations[lang].title;
+      document.querySelector('meta[name="description"]').content = translations[lang].description;
+      document.querySelectorAll("[data-i18n]").forEach(function(element) {
+        const key = element.getAttribute("data-i18n");
+        if (translations[lang][key]) element.innerHTML = translations[lang][key];
+      });
+      document.querySelectorAll(".language-btn").forEach(function(button) {
+        const isActive = button.getAttribute("data-lang") === lang;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+      document.querySelector(".language-switch").setAttribute(
+        "aria-label",
+        lang === "hi" ? "भाषा चुनें" : "Choose language"
+      );
+      localStorage.setItem("brightLifeLanguage", lang);
+    }
+
+    document.querySelectorAll(".language-btn").forEach(function(button) {
+      button.addEventListener("click", function() {
+        setLanguage(button.getAttribute("data-lang"));
+      });
+    });
+
+    setLanguage(localStorage.getItem("brightLifeLanguage") || "en");
+
     document.querySelectorAll('.tab-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
         document.querySelectorAll('.tab-btn').forEach(function(b) {
