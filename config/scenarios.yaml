@@ -1,0 +1,129 @@
+# Scenario definitions per persona × risk_level × language
+# Each scenario drives synthetic transcript generation and expected audit outcome
+
+risk_levels: [good, moderate, high, critical]
+
+scenarios:
+  collections:
+    good:
+      en:
+        - id: coll_good_en_1
+          description: "Standard payment arrangement with full compliance"
+          expected_findings: []  # no failures
+          traits: [greeting_with_company_and_name, mini_miranda, right_party_verification, accurate_details, recap_confirmation, professional_closing]
+        - id: coll_good_en_2
+          description: "Hardship discussion with proper options and recap"
+          expected_findings: []
+          traits: [full_opening, clear_payment_options, recap_of_arrangement]
+      es:
+        - id: coll_good_es_1
+          description: "Arreglo de pago estándar con cumplimiento completo"
+          expected_findings: []
+          traits: [greeting_with_company_and_name, mini_miranda, right_party_verification, recap_confirmation]
+    moderate:
+      en:
+        - id: coll_mod_en_1
+          description: "Payment discussion but no recap of arrangement"
+          expected_findings: [no_recap_of_arrangement]
+          traits: [greeting_ok, no_recap]
+        - id: coll_mod_en_2
+          description: "Account discussed before verification confirmed"
+          expected_findings: [no_verification_before_discussing_account]
+          traits: [skips_verification, discusses_balance_early]
+      es:
+        - id: coll_mod_es_1
+          description: "Conversación de pago sin resumen del acuerdo"
+          expected_findings: [no_recap_of_arrangement]
+          traits: [greeting_ok, no_recap]
+    high:
+      en:
+        - id: coll_high_en_1
+          description: "Aggressive tone and no recap"
+          expected_findings: [aggressive_or_threatening_tone, no_recap_of_arrangement]
+          traits: [pushing_payment, no_recap, firm_to_aggressive]
+        - id: coll_high_en_2
+          description: "Misstated balance and no verification"
+          expected_findings: [misstating_balance_or_fees, no_verification_before_discussing_account]
+          traits: [wrong_balance_mentioned, no_rpv]
+      es:
+        - id: coll_high_es_1
+          description: "Tono agresivo y sin resumen"
+          expected_findings: [aggressive_or_threatening_tone, no_recap_of_arrangement]
+          traits: [no_recap, firm_to_aggressive]
+    critical:
+      en:
+        - id: coll_crit_en_1
+          description: "Missing Mini-Miranda and no right-party verification"
+          expected_findings: [missing_mini_miranda, no_verification_before_discussing_account]
+          traits: [no_mini_miranda, no_rpv, discusses_account_immediately]
+        - id: coll_crit_en_2
+          description: "Third-party disclosure and promising outside authority"
+          expected_findings: [third_party_disclosure_violation, promising_outside_policy_authority]
+          traits: [discloses_to_third_party, promises_authority]
+      es:
+        - id: coll_crit_es_1
+          description: "Falta Mini-Miranda y sin verificación de identidad"
+          expected_findings: [missing_mini_miranda, no_verification_before_discussing_account]
+          traits: [no_mini_miranda, no_rpv]
+
+  ram:
+    good:
+      en:
+        - id: ram_good_en_1
+          description: "Portal walkthrough with confirmation of understanding"
+          expected_findings: []
+          traits: [greeting, dealer_verification, portal_guidance, recap_next_steps]
+        - id: ram_good_en_2
+          description: "Documentation checklist and professional close"
+          expected_findings: []
+          traits: [accurate_docs, confirm_understanding, professional_closing]
+      es:
+        - id: ram_good_es_1
+          description: "Guía del portal con confirmación"
+          expected_findings: []
+          traits: [greeting, portal_guidance, recap]
+    moderate:
+      en:
+        - id: ram_mod_en_1
+          description: "No recap of next steps"
+          expected_findings: [no_recap]
+          traits: [guidance_ok, no_recap]
+        - id: ram_mod_en_2
+          description: "No confirmation of dealer understanding"
+          expected_findings: [no_confirmation_of_understanding]
+          traits: [explains_but_no_confirm]
+      es:
+        - id: ram_mod_es_1
+          description: "Sin resumen de próximos pasos"
+          expected_findings: [no_recap]
+          traits: [no_recap]
+    high:
+      en:
+        - id: ram_high_en_1
+          description: "Overpromising turnaround and no recap"
+          expected_findings: [overpromising_turnaround_time, no_recap]
+          traits: [promises_fast_turnaround, no_recap]
+        - id: ram_high_en_2
+          description: "Incorrect doc guidance and transactional tone"
+          expected_findings: [incorrect_documentation_guidance, transactional_tone_harming_relationship]
+          traits: [wrong_doc_list, rushed_tone]
+      es:
+        - id: ram_high_es_1
+          description: "Promesas de tiempo y sin resumen"
+          expected_findings: [overpromising_turnaround_time, no_recap]
+          traits: [overpromise, no_recap]
+    critical:
+      en:
+        - id: ram_crit_en_1
+          description: "Advising policy bypass and contradicting underwriting"
+          expected_findings: [advising_policy_bypass, contradicting_underwriting_rules]
+          traits: [suggests_workaround, contradicts_uw_rules]
+        - id: ram_crit_en_2
+          description: "Wrong documentation and policy bypass"
+          expected_findings: [incorrect_documentation_guidance, advising_policy_bypass]
+          traits: [wrong_docs, bypass_suggestion]
+      es:
+        - id: ram_crit_es_1
+          description: "Aconseja evitar política y contradice subscripción"
+          expected_findings: [advising_policy_bypass, contradicting_underwriting_rules]
+          traits: [workaround, contradict_rules]
