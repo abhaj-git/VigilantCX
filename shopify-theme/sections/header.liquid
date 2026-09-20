@@ -25,7 +25,7 @@
       {% for link in section.settings.menu.links %}
         <a href="{{ link.url }}" {% if link.current %}aria-current="page"{% endif %}>{{ link.title }}</a>
       {% else %}
-        <a href="/collections/all">Shop</a>
+        <a href="{{ routes.all_products_collection_url }}">Shop</a>
         <a href="/pages/about">Our story</a>
       {% endfor %}
     </nav>
@@ -42,7 +42,7 @@
     {% for link in section.settings.menu.links %}
       <a href="{{ link.url }}">{{ link.title }}</a>
     {% else %}
-      <a href="/collections/all">Shop</a>
+      <a href="{{ routes.all_products_collection_url }}">Shop</a>
       <a href="/pages/about">Our story</a>
     {% endfor %}
   </nav>

@@ -11,7 +11,7 @@
       {% for link in section.settings.menu.links %}
         <a href="{{ link.url }}">{{ link.title }}</a>
       {% else %}
-        <a href="/collections/all">Shop all</a>
+        <a href="{{ routes.all_products_collection_url }}">Shop all</a>
         <a href="/policies/shipping-policy">Shipping</a>
         <a href="/policies/refund-policy">Returns</a>
       {% endfor %}
