@@ -1,0 +1,75 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "SVANK",
+    "theme_version": "1.0.0",
+    "theme_author": "SVANK",
+    "theme_documentation_url": "https://help.shopify.com/en/manual/online-store/themes",
+    "theme_support_url": "https://help.shopify.com/"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 80,
+        "max": 240,
+        "step": 10,
+        "default": 150,
+        "unit": "px",
+        "label": "Logo width"
+      },
+      {
+        "type": "color",
+        "id": "background",
+        "default": "#f4f4f2",
+        "label": "Background"
+      },
+      {
+        "type": "color",
+        "id": "surface",
+        "default": "#ffffff",
+        "label": "Surface"
+      },
+      {
+        "type": "color",
+        "id": "text",
+        "default": "#202020",
+        "label": "Text"
+      },
+      {
+        "type": "color",
+        "id": "muted_text",
+        "default": "#686868",
+        "label": "Muted text"
+      },
+      {
+        "type": "color",
+        "id": "accent",
+        "default": "#b7934c",
+        "label": "Accent"
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "url",
+        "id": "social_instagram",
+        "label": "Instagram"
+      },
+      {
+        "type": "url",
+        "id": "social_tiktok",
+        "label": "TikTok"
+      }
+    ]
+  }
+]

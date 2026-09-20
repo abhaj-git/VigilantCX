@@ -1,0 +1,71 @@
+<section class="hero page-width">
+  <div class="hero-media">
+    {% if section.settings.image != blank %}
+      {{ section.settings.image
+        | image_url: width: 2200
+        | image_tag: widths: '600, 900, 1200, 1600, 2200', sizes: '(min-width: 900px) 62vw, 100vw', loading: 'eager', alt: section.settings.image.alt
+      }}
+    {% else %}
+      <img
+        src="{{ 'svank-holiday-hero.png' | asset_url }}"
+        width="1200"
+        height="1200"
+        loading="eager"
+        alt="Blue sunglasses beside a bright Mediterranean pool"
+      >
+    {% endif %}
+  </div>
+  <div class="hero-content">
+    {% if section.settings.eyebrow != blank %}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
+    <h1>{{ section.settings.heading | escape }}</h1>
+    <div class="hero-copy">{{ section.settings.text }}</div>
+    {% if section.settings.button_label != blank %}
+      <a class="button" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+        {{ section.settings.button_label | escape }}
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Holiday hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "default": "The escape collection",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Looks made for brighter plans.",
+      "label": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Easy-to-wear sunglasses for city afternoons, poolside weekends, and everywhere the light takes you.</p>",
+      "label": "Text"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Shop sunglasses",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [{ "name": "Holiday hero" }]
+}
+{% endschema %}

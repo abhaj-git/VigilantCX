@@ -1,0 +1,60 @@
+<footer class="site-footer">
+  <div class="page-width footer-grid">
+    <div>
+      <p class="eyebrow">SVANK</p>
+      <h2>{{ section.settings.heading | escape }}</h2>
+      <div class="footer-copy">{{ section.settings.text }}</div>
+    </div>
+
+    <div class="footer-links">
+      <p class="eyebrow">Explore</p>
+      {% for link in section.settings.menu.links %}
+        <a href="{{ link.url }}">{{ link.title }}</a>
+      {% else %}
+        <a href="/collections/all">Shop all</a>
+        <a href="/policies/shipping-policy">Shipping</a>
+        <a href="/policies/refund-policy">Returns</a>
+      {% endfor %}
+    </div>
+
+    <div>
+      <p class="eyebrow">Stay in the sun</p>
+      {% form 'customer', class: 'newsletter' %}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <label class="visually-hidden" for="FooterEmail">Email address</label>
+        <input id="FooterEmail" type="email" name="contact[email]" placeholder="Email address" required>
+        <button type="submit">Join</button>
+      {% endform %}
+    </div>
+  </div>
+  <div class="page-width footer-bottom">
+    <span>© {{ 'now' | date: '%Y' }} {{ shop.name | default: 'SVANK' }}</span>
+    <span>Designed for bright days.</span>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Find your light.",
+      "label": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Everyday sunglasses made for bright plans and easy escapes.</p>",
+      "label": "Text"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "footer",
+      "label": "Menu"
+    }
+  ]
+}
+{% endschema %}

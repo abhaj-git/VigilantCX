@@ -1,0 +1,19 @@
+<article class="product-card">
+  <a class="product-card-media" href="{{ product.url }}">
+    {% if product.featured_image %}
+      {{ product.featured_image
+        | image_url: width: 900
+        | image_tag: widths: '300, 450, 600, 900', sizes: '(min-width: 900px) 25vw, 50vw', loading: 'lazy', alt: product.featured_image.alt
+      }}
+    {% else %}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+    {% endif %}
+    {% if product.compare_at_price > product.price %}
+      <span class="product-badge">Sale</span>
+    {% endif %}
+  </a>
+  <div class="product-card-info">
+    <h3><a href="{{ product.url }}">{{ product.title }}</a></h3>
+    <span>{{ product.price | money }}</span>
+  </div>
+</article>

@@ -1,0 +1,44 @@
+<section class="cart section page-width">
+  <header class="collection-header">
+    <p class="eyebrow">Your selection</p>
+    <h1>Shopping bag</h1>
+  </header>
+
+  {% if cart.item_count > 0 %}
+    {% form 'cart', cart %}
+      <div class="cart-items">
+        {% for item in cart.items %}
+          <div class="cart-item">
+            <a href="{{ item.url }}">
+              {{ item.image | image_url: width: 240 | image_tag: width: 120, loading: 'lazy', alt: item.title }}
+            </a>
+            <div>
+              <h2><a href="{{ item.url }}">{{ item.product.title }}</a></h2>
+              {% unless item.product.has_only_default_variant %}<p>{{ item.variant.title }}</p>{% endunless %}
+              <p>{{ item.final_line_price | money }}</p>
+              <label for="Quantity-{{ item.index | plus: 1 }}">Quantity</label>
+              <input id="Quantity-{{ item.index | plus: 1 }}" name="updates[]" value="{{ item.quantity }}" min="0" type="number">
+              <a class="text-link" href="{{ item.url_to_remove }}">Remove</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="cart-summary">
+        <p>Subtotal <strong>{{ cart.total_price | money }}</strong></p>
+        <p class="small">Shipping and taxes calculated at checkout.</p>
+        <button class="button" type="submit" name="update">Update bag</button>
+        <button class="button button-dark" type="submit" name="checkout">Checkout</button>
+      </div>
+    {% endform %}
+  {% else %}
+    <p>Your bag is empty.</p>
+    <a class="button" href="{{ routes.all_products_collection_url }}">Shop sunglasses</a>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": []
+}
+{% endschema %}
