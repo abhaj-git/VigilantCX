@@ -3,8 +3,14 @@
     {% if product.featured_image %}
       {{ product.featured_image
         | image_url: width: 900
-        | image_tag: widths: '300, 450, 600, 900', sizes: '(min-width: 900px) 25vw, 50vw', loading: 'lazy', alt: product.featured_image.alt
+        | image_tag: widths: '300, 450, 600, 900', sizes: '(min-width: 900px) 25vw, 50vw', loading: 'lazy', alt: product.featured_image.alt, class: 'product-card-primary'
       }}
+      {% if product.images[1] %}
+        {{ product.images[1]
+          | image_url: width: 900
+          | image_tag: widths: '300, 450, 600, 900', sizes: '(min-width: 900px) 25vw, 50vw', loading: 'lazy', alt: product.images[1].alt, class: 'product-card-secondary'
+        }}
+      {% endif %}
     {% else %}
       {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
     {% endif %}
