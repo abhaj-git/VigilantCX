@@ -13,9 +13,9 @@
         }}
       {% else %}
         <img
-          src="{{ 'svank-logo.jpg' | asset_url }}"
+          src="{{ 'svank-logo.png' | asset_url }}"
           width="{{ settings.logo_width }}"
-          height="{{ settings.logo_width | times: 0.518 | round }}"
+          height="{{ settings.logo_width | times: 350 | divided_by: 1270 }}"
           alt="{{ shop.name | default: 'SVANK' }}"
         >
       {% endif %}
