@@ -1,17 +1,55 @@
 <section class="product page-width" data-product>
-  <div class="product-gallery">
-    {% for media in product.media %}
-      <div class="product-media">
-        {% if media.media_type == 'image' %}
-          {{ media
+  <div class="product-gallery" data-gallery aria-label="{{ product.title | escape }} image gallery">
+    <div class="product-gallery-viewport">
+      {% for image in product.images %}
+        <figure
+          class="product-media"
+          data-gallery-slide
+          data-index="{{ forloop.index0 }}"
+          {% unless forloop.first %}hidden{% endunless %}
+        >
+          {{ image
             | image_url: width: 1600
-            | image_tag: widths: '600, 900, 1200, 1600', sizes: '(min-width: 900px) 58vw, 100vw', loading: 'lazy', alt: media.alt
+            | image_tag: widths: '600, 900, 1200, 1600', sizes: '(min-width: 900px) 58vw, 100vw', loading: 'lazy', alt: image.alt
           }}
-        {% endif %}
+        </figure>
+      {% else %}
+        <div class="product-media">{{ 'product-1' | placeholder_svg_tag: 'placeholder' }}</div>
+      {% endfor %}
+
+      {% if product.images.size > 1 %}
+        <button class="gallery-arrow gallery-arrow-prev" type="button" data-gallery-prev aria-label="Previous image">
+          <span aria-hidden="true">←</span>
+        </button>
+        <button class="gallery-arrow gallery-arrow-next" type="button" data-gallery-next aria-label="Next image">
+          <span aria-hidden="true">→</span>
+        </button>
+        <p class="gallery-counter" aria-live="polite">
+          <span data-gallery-current>1</span> / {{ product.images.size }}
+        </p>
+      {% endif %}
+    </div>
+
+    {% if product.images.size > 1 %}
+      <div class="product-gallery-thumbnails" role="tablist" aria-label="Choose product image">
+        {% for image in product.images %}
+          <button
+            class="gallery-thumbnail{% if forloop.first %} is-active{% endif %}"
+            type="button"
+            role="tab"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            aria-label="Show image {{ forloop.index }} of {{ product.images.size }}"
+            data-gallery-thumb
+            data-index="{{ forloop.index0 }}"
+          >
+            {{ image
+              | image_url: width: 180
+              | image_tag: width: 90, height: 90, loading: 'lazy', alt: image.alt
+            }}
+          </button>
+        {% endfor %}
       </div>
-    {% else %}
-      {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
-    {% endfor %}
+    {% endif %}
   </div>
 
   <div class="product-details">
