@@ -15,6 +15,7 @@
       <meta name="description" content="{{ page_description | escape }}">
     {% endif %}
     {{ content_for_header }}
+    {% render 'structured-data' %}
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     <style>
       :root {

@@ -56,7 +56,6 @@
     <p class="eyebrow">{{ product.vendor | default: 'SVANK' }}</p>
     <h1>{{ product.title }}</h1>
     <p class="product-price">{{ product.selected_or_first_available_variant.price | money }}</p>
-    <div class="product-description">{{ product.description }}</div>
 
     {% form 'product', product, class: 'product-form' %}
       {% unless product.has_only_default_variant %}
@@ -84,10 +83,8 @@
       {{ form | payment_button }}
     {% endform %}
 
-    <details open>
-      <summary>Details</summary>
-      <p>Designed for comfortable, everyday wear. Product specifications can be updated in Shopify.</p>
-    </details>
+    <div class="product-description">{{ product.description }}</div>
+
     <details>
       <summary>Shipping & returns</summary>
       <p>$5 flat shipping for one pair. Buy two or more for free shipping in the US and Canada. Delivery estimates and return terms are being finalized.</p>

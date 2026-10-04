@@ -308,7 +308,29 @@ h2 { font-size: clamp(2.15rem, 4vw, 4.5rem); }
 .product-details { position: sticky; top: 30px; align-self: start; padding-top: 30px; }
 .product-details h1 { margin-bottom: 20px; font-size: clamp(2.5rem, 4vw, 4.5rem); }
 .product-price { font-size: 16px; }
-.product-description { margin: 30px 0; color: var(--muted); }
+.product-description {
+  margin: 38px 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+}
+.product-description h3 {
+  margin: 34px 0 12px;
+  color: var(--text);
+  font-family: "Manrope", Arial, sans-serif;
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -.02em;
+}
+.product-description h4 {
+  margin: 24px 0 6px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.product-description ul { margin: 0; padding-left: 20px; }
+.product-description li { margin-bottom: 8px; }
+.product-description p { margin-bottom: 12px; }
 .product-form { display: grid; gap: 12px; margin-bottom: 35px; }
 .product-form label { margin-top: 8px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
 .product-form select, .product-form input {

@@ -1,0 +1,1 @@
+These CSVs document collection membership. Shopify does not natively create collections from CSV. Create an automated collection in Shopify Admin using the tag rule listed in SVANK-Collection-Setup.csv.
