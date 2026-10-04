@@ -1,0 +1,20 @@
+{
+  "current": {
+    "logo_width": 150,
+    "background": "#f4f4f2",
+    "surface": "#ffffff",
+    "text": "#202020",
+    "muted_text": "#686868",
+    "accent": "#b7934c"
+  },
+  "presets": {
+    "SVANK": {
+      "logo_width": 150,
+      "background": "#f4f4f2",
+      "surface": "#ffffff",
+      "text": "#202020",
+      "muted_text": "#686868",
+      "accent": "#b7934c"
+    }
+  }
+}

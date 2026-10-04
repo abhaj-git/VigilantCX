@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SVANK — Product carousel preview</title>
+    <link rel="stylesheet" href="../assets/theme.css">
+    <script src="../assets/theme.js" defer></script>
+  </head>
+  <body>
+    <div class="announcement">Free US &amp; Canada shipping when you buy 2</div>
+    <header class="site-header">
+      <div class="header-inner page-width">
+        <button class="menu-toggle" type="button" aria-label="Menu"><span></span><span></span></button>
+        <nav class="desktop-nav"><a href="./">Shop</a><a href="./#story">Our story</a></nav>
+        <a class="brand" href="./"><img src="../assets/svank-logo.png" width="150" height="41" alt="SVANK"></a>
+        <div class="header-actions"><a href="#">Search</a><a href="#">Bag <span class="cart-count">0</span></a></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="product page-width" data-product>
+        <div class="product-gallery" data-gallery aria-label="Green sunglasses image gallery">
+          <div class="product-gallery-viewport">
+            <figure class="product-media" data-gallery-slide data-index="0">
+              <img src="./images/green-sunglasses-books.jpg" alt="Green sunglasses styled on antique books">
+            </figure>
+            <figure class="product-media" data-gallery-slide data-index="1" hidden>
+              <img src="./images/green-sunglasses-model.jpg" alt="Model wearing green sunglasses">
+            </figure>
+            <figure class="product-media" data-gallery-slide data-index="2" hidden>
+              <img src="./images/green-sunglasses-desk.jpg" alt="Green sunglasses in a desk setting">
+            </figure>
+            <button class="gallery-arrow gallery-arrow-prev" type="button" data-gallery-prev aria-label="Previous image"><span aria-hidden="true">←</span></button>
+            <button class="gallery-arrow gallery-arrow-next" type="button" data-gallery-next aria-label="Next image"><span aria-hidden="true">→</span></button>
+            <p class="gallery-counter" aria-live="polite"><span data-gallery-current>1</span> / 3</p>
+          </div>
+
+          <div class="product-gallery-thumbnails" role="tablist" aria-label="Choose product image">
+            <button class="gallery-thumbnail is-active" type="button" role="tab" aria-selected="true" aria-label="Show image 1 of 3" data-gallery-thumb data-index="0">
+              <img src="./images/green-sunglasses-books.jpg" width="90" height="90" alt="">
+            </button>
+            <button class="gallery-thumbnail" type="button" role="tab" aria-selected="false" aria-label="Show image 2 of 3" data-gallery-thumb data-index="1">
+              <img src="./images/green-sunglasses-model.jpg" width="90" height="90" alt="">
+            </button>
+            <button class="gallery-thumbnail" type="button" role="tab" aria-selected="false" aria-label="Show image 3 of 3" data-gallery-thumb data-index="2">
+              <img src="./images/green-sunglasses-desk.jpg" width="90" height="90" alt="">
+            </button>
+          </div>
+        </div>
+
+        <div class="product-details">
+          <p class="eyebrow">SVANK</p>
+          <h1>The Archive</h1>
+          <p class="product-price">$34.99</p>
+          <form class="product-form">
+            <label for="PreviewQuantity">Quantity</label>
+            <input id="PreviewQuantity" type="number" value="1" min="1">
+            <button class="button button-wide" type="button">Add to bag</button>
+          </form>
+          <div class="product-description">
+            <p>A softly sculpted green frame for unhurried afternoons and thoughtful escapes.</p>
+            <h3>Why you’ll love it</h3>
+            <ul><li>Artistic round silhouette</li><li>Gender-inclusive styling</li><li>Polarized lenses</li></ul>
+            <h3>Product specifications</h3>
+            <ul><li>Shape: Round</li><li>Frame color: Translucent green</li><li>Audience: Men, Women, Unisex</li></ul>
+            <h3>Care instructions</h3>
+            <ul><li>Clean with a microfiber cloth.</li><li>Store in a protective case.</li></ul>
+            <h3>Frequently asked questions</h3>
+            <h4>Are these sunglasses polarized?</h4><p>Yes. This style uses TAC polarized lenses.</p>
+            <h4>Who can wear this frame?</h4><p>This is a gender-inclusive style.</p>
+          </div>
+          <details><summary>Shipping & returns</summary><p>$5 flat shipping for one pair. Buy two or more for free shipping in the US and Canada. Return terms are being finalized.</p></details>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

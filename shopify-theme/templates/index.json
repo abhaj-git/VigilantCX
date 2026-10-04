@@ -1,0 +1,57 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "The escape collection",
+        "heading": "Looks made for brighter plans.",
+        "text": "<p>Easy-to-wear sunglasses for city afternoons, poolside weekends, and everywhere the light takes you.</p>",
+        "button_label": "Shop sunglasses",
+        "button_link": "shopify://collections/all"
+      }
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "New light",
+        "heading": "Shop sunglasses",
+        "products_to_show": 8
+      }
+    },
+    "story": {
+      "type": "brand-story",
+      "blocks": {
+        "comfort": {
+          "type": "point",
+          "settings": {
+            "heading": "Easy comfort",
+            "text": "Lightweight frames for all-day plans."
+          }
+        },
+        "style": {
+          "type": "point",
+          "settings": {
+            "heading": "Everyday style",
+            "text": "Clean silhouettes with just enough edge."
+          }
+        },
+        "roam": {
+          "type": "point",
+          "settings": {
+            "heading": "Ready to roam",
+            "text": "Made for bright days near and far."
+          }
+        }
+      },
+      "block_order": ["comfort", "style", "roam"],
+      "settings": {
+        "eyebrow": "Why SVANK",
+        "heading": "Good shade. Great outlook.",
+        "text": "<p>We make expressive sunglasses for people who would rather be planning their next escape.</p>",
+        "link_label": "Our story",
+        "link": "shopify://pages/about"
+      }
+    }
+  },
+  "order": ["hero", "featured", "story"]
+}
